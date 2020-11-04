@@ -1,6 +1,5 @@
 
 
-
 class ConnectionError(Exception):
     """Error when connecting to API"""
     pass
@@ -11,10 +10,10 @@ class AccessDeniedError(Exception):
     pass
 
 
-class MissingArguments(Exception):
+class MissingArguments(ValueError):
     """Missing arguments in call"""
 
 
-class BadArgument(Exception):
+class BadArgument(ValueError):
     """Wrong Argument"""
     pass
