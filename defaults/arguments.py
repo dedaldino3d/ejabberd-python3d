@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from abc import ABCMeta, abstractmethod
-
+from enum import Enum as BaseClassEnum
 
 
 class APIArgumentSerializer(ABCMeta):
@@ -25,6 +25,17 @@ class APIArgument(ABCMeta):
     @property
     def serializer_class(self):
         pass
+
+
+
+class Enum(BaseClassEnum):
+    @classmethod
+    def get_by_name(cls, name):
+        return getattr(cls, name, None)
+    
+    @classmethod
+    def get_by_value(cls, value):
+        return cls(value)
 
 
 
