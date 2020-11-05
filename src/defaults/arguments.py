@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from ..api import APIArgument
-from ..api import StringSerializer, IntegerSerializer, PositiveIntegerSerializer, BooleanSerializer
+from ..abc.api import APIArgument
+from ..serializers import StringSerializer, IntegerSerializer, PositiveIntegerSerializer, BooleanSerializer
 
 
 class StringArgument(APIArgument):

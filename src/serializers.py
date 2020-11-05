@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from six import string_types
 
-from .api import Enum, APIArgumentSerializer
+from .abc.api import Enum, APIArgumentSerializer
 
 
 
