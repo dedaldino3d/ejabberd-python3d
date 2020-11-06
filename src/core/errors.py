@@ -12,8 +12,14 @@ class AccessDeniedError(Exception):
 
 class MissingArguments(ValueError):
     """Missing arguments in call"""
-
+    pass
 
 class BadArgument(ValueError):
     """Wrong Argument"""
     pass
+
+
+class UserAlreadyRegisteredError(Exception):
+    """User already registered"""
+    pass
+    
