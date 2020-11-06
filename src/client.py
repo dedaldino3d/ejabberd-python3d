@@ -1,57 +1,247 @@
-from __future__ import print_function
-
 import xmlrpc
-
+import copy
+from __future__ import print_function
 from httplib import BadStatusLine
+from urllib.parse import urlparse
+
+from .abc import api, methods
+from .defaults import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT
 
 
-class EjabberdAPI(object):
+class EjabberdAPIClient(api.EjabberdBaseAPI):
     '''
     Python client for Ejabberd XML-RPC Administration API.
     '''
     def __init__(self,
                  host, username, password,
-                 protocol='http', server='127.0.0.1', port=4560,
+                 server='127.0.0.1', port=4560, protocol='http',
                  admin=True, verbose=False):
         '''
         Init XML-RPC server proxy.
         '''
-        self.params = {'user': username,
-                       'password': password,
-                       'server': host,
-                       'admin': admin}
-        self.errors = {
-            'connect': 'ERROR: cannot connect to the server/the call crashed',
-            'access': 'ERROR: access denied, account unprivileged',
-            'bad_arg': 'ERROR: call failed, bad input argument',
-            'missing_arg': 'ERROR: call failed, missing input argument'
-            }
-        uri = '{}://{}:{}'.format(protocol, server, port)
-        self.xmlrpc_server = xmlrpc.ServerProxy(uri, verbose=verbose)
+        self.host = host
+        self.username = username
+        self.password = password
+        self.server = server
+        self.protocol = protocol or XMLRPC_API_PROTOCOL
+        self.verbose = verbose
+        self._server_proxy = None
 
-    def _call_api(self, command, **kwargs):
-        '''
-        Run ejabberd command.
-        '''
-        fn = getattr(self.xmlrpc_server, command)
-        try:
-            if kwargs:
-                return fn(self.params, **kwargs)
-            return fn(self.params)
-        except BadStatusLine, e:
-            raise Exception('{}\n{}'.format(self.errors['connect'],
-                                            e.message))
-        except xmlrpc.Fault, e:
-            if 'account_unprivileged' in e.message:
-                raise Exception('{}\n{}'.format(self.errors['access'],
-                                                e.message))
-            if 'bad_argument' in e.message:
-                raise Exception('{}\n{}'.format(self.errors['bad_arg'],
-                                                e.message))
-            if 'Required attribute' in e.message and 'not found' in e.message:
-                raise Exception('{}\n{}'.format(self.errors['missing_arg'],
-                                                e.message))
-            raise Exception(e)
+    @staticmethod
+    def get_instance(service_url, verbose=Fase):
+        """
+        Return a EjabberdAPIClient instance based on a '12factor app' compliant service_url
+
+        :param service_url: A connection string in the format:
+            <http|https>://<username>:<password>@<host>(:port)/user_domain
+        :type service_url: str|unicode
+        :param verbose:
+        :type verbose: bool
+        :return: EjabberdAPIClient instance
+        """
+        format_error = "expects service_url like https://username:password@HOST:PORT/DOMAIN"
+
+        o = urlparse(service_url)
+        protocol = o.scheme
+        assert protocol in ('http', 'https'), format_error
+
+        netloc_parts = o.netloc.split('@')
+        assert len(netloc_parts) == 2, format_error
+
+        auth, server = netloc_parts
+        auth_parts = auth.split(':')
+        assert len(auth_parts) == 2, format_error
+
+        username, password = auth_parts
+        server_parts = server.split(':')
+        assert len(server_parts) <= 2, format_error
+
+        if len(server_parts) == 2:
+            host, port = server_parts
+            port = int(port)
+        else:
+            host, port = server_parts[0],XMLRPC_API_PORT
+        path_parts = o.path.lstrip('/').split('/')
+        assert len(path_parts) == 1, format_error
+
+        server =path_parts[0]
+        return EjabberdAPIClient(host, username, password,server, port,protocol=protocol, verbose=verbose)
+
+
+    @property
+    def service_url(self):
+        """
+        Returns the FQDN to the Ejabberd server's XML-RPC endpoint
+        :return:
+        """
+        return "{}://{}:{}/".format(self.protocol, self.host, self.port)
+
+
+    @property
+    def server_proxy(self):
+        """
+        Returns the proxy object that is used to perform the calls to the XML-RPC endpoint
+        """
+        if self._server_proxy is None:
+            self._server_proxy = xmlrpc.client.ServerProxy(self.service_url, verbose(1 if self.verbose else 0))
+        return self._server_proxy
+    
+    @property
+    def auth(self):
+        """
+        Returns a dictionary containing the basic authorization info
+        """
+        return {
+            'user': self.username,
+            'server': self.server,
+            'password': self.password
+        }
+    
+
+    def _validate_and_serialize_arguments(self, api, arguments):
+        """
+        Internal method to validate and serialize arguments
+        :param api: An instance of an API class
+        :param arguments: A dictionary of arguments that will be passed to the method
+        :type arguments: dict
+        :rtype: dict
+        :return: The serialized arguments
+        """
+        ser_args = {}
+
+        for i in range(len(api.arguments)):
+            arg_desc = api.arguments[i]
+            assert isinstance(arg_desc, api.APIArgument)
+
+            # validate argument presence
+            arg_name = str(arg_desc.name)
+            if arg_desc.required and arg_name not in arguments:
+                raise MissingArguments("Missing required argument '%s'" % arg_name)
+            
+            # serialize argument value
+            ser_args[arg_desc.name] = arg_desc.serializer_class().to_api(arguments.get(arg_name))
+        
+        return ser_args
+
+    def _report_method_call(self, method, arguments):
+        """
+        Internal method to print info about a method call
+        :param method: The name oft hem ethod to call
+        :type method: str|unicode
+        :param arguments: A dictionary of arguments that will be passed to the method
+        :type: arguments: dict
+        :return:
+        """
+        if self.verbose:
+            print("===> %s(%s)" %(method, ', '.join(['%s=%s' % (k,v) for k,v in arguments.items()])))
+    
+    def _call_api(self, api_class, **kwargs):
+        """
+        Internal method used to perform api calls
+        :param api_class:
+        :type api_class: py:class:API
+        :param kwargs:
+        :type kwargs: dict
+        :rtype: object
+        :return: Returns return value of the XMLRPC Method call
+        """
+        # validate api_class
+        assert issubclass(api_class, API)
+
+        # create api instance
+        api = api_class()
+        # copy arguments
+        args = copy.copy(kwargs)
+
+        # transform arguments
+        args = api.transform_arguments(**args)
+        # validate and serializer arguments
+        args = self._validate_and_serialize_arguments(api, args)
+        # retrive method
+        method = getattr(self.server_proxy, str(api.method))
+
+        # print method call with arguments
+        self._report_method_call(api.method, args)
+
+        # perform call
+        if not api.authenticate:
+            response = method(args)
+        else:
+            response = method(self.auth, args)
+        
+        # validate response
+        api.validate_response(api, args, response)
+        # tranform response
+        result = api.transform_response(api, args, response)
+        return result
+
+    def echo(self, sentence):
+        """Echo the input back"""
+        return self._call_api(methods.Echo, sentence=sentence)
+
+    def registered_users(self, host):
+        """
+        List all registered users in the xmpp_host
+        :param host: The XMPP_DOMAIN
+        :type host: str|unicode
+        :rtype: Iterable
+        :return: A list of registered users in the xmpp_host
+        """
+        return self._call_api(methods.RegisteredUsers, host=host)
+
+    def register(self, user, host, password):
+        """
+        Registers a user to the ejabberd server
+        :param user: The username for the new user
+        :type user: str|unicode
+        :param host: The XMPP_DOMAIN
+        :type host: str|unicode
+        :param password: The password for the new user
+        :type password: str|unicode
+        :rtype: bool
+        :return: A boolean indicating if the registration has succeeded
+        """
+        return self._call_api(methods.Register, user=user, host=host, password=password)
+
+    def unregister(self, user, host):
+        """
+        UnRegisters a user from the ejabberd server
+        :param user: The username for the new user
+        :type user: str|unicode
+        :param host: The XMPP_DOMAIN
+        :type host: str|unicode
+        :rtype: bool
+        :return: A boolean indicating if the unregistration has succeeded
+        """
+        return self._call_api(methods.UnRegister, user=user, host=host)
+
+    def change_password(self, user, host, newpass):
+        """
+        Change the password for a given user
+        :param user: The username for the user we want to change the password for
+        :type user: str|unicode
+        :param host: The XMPP_DOMAIN
+        :type host: str|unicode
+        :param newpass: The new password
+        :type newpass: str|unicode
+        :rtype: bool
+        :return: A boolean indicating if the password change has succeeded
+        """
+        return self._call_api(methods.ChangePassword, user=user, host=host, newpass=newpass)
+
+    def check_password_hash(self, user, host, password):
+        """
+        Checks whether a password is correct for a given user. The used hash-method is fixed to sha1.
+        :param user: The username for the user we want to check the password for
+        :type user: str|unicode
+        :param host: The XMPP_DOMAIN
+        :type host: str|unicode
+        :param password: The password we want to check for the user
+        :type password: str|unicode
+        :rtype: bool
+        :return: A boolean indicating if the given password matches the user's password
+        """
+        return self._call_api(methods.CheckPasswordHash, user=user, host=host, password=password)
 
     def add_rosteritem(self,
                        localuser, localserver,
@@ -77,14 +267,6 @@ class EjabberdAPI(object):
         return self._call_api('ban_account', {'user': user,
                                         'host': host,
                                         'reason': reason})
-
-    def change_password(self, user, host, newpass):
-        '''
-        Change the password of an account
-        '''
-        return self._call_api('change_password', {'user': user,
-                                            'host': host,
-                                            'newpass': newpass})
 
     # TODO def change_room_option(self, name, service, option, value)
     # Change an option in a MUC room
@@ -457,19 +639,6 @@ class EjabberdAPI(object):
     # TODO def push_roster_all(self, file):
     # Push template roster from file to all those users
 
-    def register(self, user, host, password):
-        '''
-        Register a user
-        '''
-        return self._call_api('register', {'user': user,
-                                     'host': host,
-                                     'password': password})
-
-    def registered_users(self, host):
-        '''
-        List all registered users in HOST
-        '''
-        return self._call_api('registered_users', {'host': host})
 
     def registered_vhosts(self):
         '''
