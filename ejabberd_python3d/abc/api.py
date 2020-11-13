@@ -114,10 +114,6 @@ class EjabberdBaseAPI(ABCMeta):
         pass
 
     @abstractmethod
-    def set_nickname(self, user, host, nickname):
-        pass
-
-    @abstractmethod
     def connected_users(self):
         pass
 

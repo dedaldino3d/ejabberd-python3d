@@ -1,21 +1,17 @@
 from __future__ import unicode_literals
 
-from ..defaults.arguments import StringArgument
-from ..abc.api import api
-from ..serializers import StringSerializer
-from ..muc import muc_room_options_serializers
-from ..muc.arguments imprt MUCRoomArgument, AffiliationArgument
-
-# TODO: implement this methos
+from ..abc.api import API
 from ..core.errors import UserAlreadyRegisteredError
-from ..muc.enums import Affiliation
-# TODO: implement this method
 from ..core.utils import format_password_hash_sha
-
+from ..defaults.arguments import StringArgument
+from ..muc import muc_room_options_serializers
+from ..muc.arguments import MUCRoomArgument, AffiliationArgument
+from ..muc.enums import Affiliation, MUCRoomOption
+from ..serializers import StringSerializer, IntegerSerializer
 
 
 class Echo(API):
-    method = 'echothisnew'
+    method = 'dedaldino_denis_3D'
     arguments = [StringArgument('sentence')]
 
     def transform_response(self, api, arguments, response):
@@ -32,16 +28,16 @@ class RegisteredUsers(API):
 
 class Register(API):
     method = 'register'
-    arguments = [StringArgument('user'), StringArgument('host'),StringArgument('password')]
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('password')]
 
     def validate_response(self, api, arguments, response):
         if response.get('res') == 1:
-            username = arguments.get('uer')
+            username = arguments.get('user')
             raise UserAlreadyRegisteredError('User with username %s already exist' % username)
-    
+
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
-    
+
 
 class Unregister(API):
     method = 'unregister'
@@ -49,7 +45,6 @@ class Unregister(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
-
 
 
 class ChangePassword(API):
@@ -84,6 +79,7 @@ class SetNickname(API):
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
 
+
 class ConnectedUsers(API):
     method = 'connected_users'
     arguments = []
@@ -92,6 +88,7 @@ class ConnectedUsers(API):
         connected_users = response.get('connected_users', [])
 
         return [user["sessions"] for user in connected_users]
+
 
 class ConnectedUsersInfo(API):
     method = 'connected_users_info'
@@ -102,12 +99,14 @@ class ConnectedUsersInfo(API):
 
         return [user["sessions"] for user in connected_users_info]
 
+
 class ConnectedUsersNumber(API):
     method = 'connected_users_number'
     arguments = []
 
     def transform_response(self, api, arguments, response):
         return response.get('num_sessions')
+
 
 class UserSessionInfo(API):
     method = 'user_sessions_info'
@@ -119,13 +118,6 @@ class UserSessionInfo(API):
             dict((k, v) for property_k_v in session["session"] for k, v in property_k_v.items())
             for session in sessions_info
         ]
-
-class MucOnlineRooms(API):
-    method = 'muc_online_rooms'
-    arguments = [StringArgument('host')]
-
-    def transform_response(self, api, arguments, response):
-        return [result_dict.get('room') for result_dict in response.get('rooms', {})]
 
 
 class CreateRoom(API):
@@ -153,7 +145,7 @@ class GetRoomOptions(API):
         for option_dict in response.get('options', []):
             option = option_dict.get('option')
             if option is None:
-                raise ValueError('Unexpected option in response: ' % str(option_dict))
+                raise ValueError('Unexpected option in response: {}'.format(str(option_dict)))
             name_dict, value_dict = option
             result[name_dict['name']] = value_dict['value']
         return result
@@ -172,6 +164,14 @@ class ChangeRoomOption(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
+
+
+class GetRoomAffiliation(API):
+    method = 'get_room_affiliation'
+    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('jid')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('affiliation') == 0
 
 
 class SetRoomAffiliation(API):
@@ -229,3 +229,200 @@ class GetRoster(API):
                     contact_details[key] = value
             roster.append(contact_details)
         return roster
+
+
+class Backup(API):
+    method = 'backup'
+    arguments = [StringArgument('file')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res').lower() == "success"
+
+
+class BanAccount(API):
+    method = 'ban_account'
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('reason')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class BookmarksToPEP(API):
+    method = 'bookmarks_to_pep'
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res')
+
+
+class CheckAccount(API):
+    method = 'check_account'
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class ClearCache(API):
+    method = 'clear_cache'
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class Compile(API):
+    method = 'compile'
+    arguments = [StringArgument('file')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class ConnectedUsersVhost(API):
+    method = 'connected_users_vhost'
+    arguments = [StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('connected_users_vhost', [])
+
+
+class ConvertToSCRAM(API):
+    method = 'convert_to_scram'
+    arguments = [StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class CreateRoomWithOPTS(API):
+    method = "create_room_with_opts"
+    # TODO: add argument options: [{name::string,value::string}]: List of options
+    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class GetLast(API):
+    method = 'get_last'
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('last_activity', {})
+
+
+class GetOfflineCount(API):
+    method = "get_offline_count"
+    arguments = [StringArgument('user'), StringArgument('server')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('value')
+
+
+class GetPresence(API):
+    method = "get_presence"
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('presence')
+
+
+class GetRoomOccupants(API):
+    method = 'get_room_occupants'
+    arguments = [StringArgument('name'), StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('occupants')
+
+
+class GetRoomOccupantsNumber(API):
+    method = 'get_room_occupants_number'
+    arguments = [StringArgument('name'), StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('occupants')
+
+
+class GetSubscrivers(API):
+    method = 'get_subscribers'
+    arguments = [StringArgument('name'), StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('subscribers')
+
+
+class GetUserRooms(API):
+    method = 'get_user_rooms'
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('rooms')
+
+
+class MucOnlineRooms(API):
+    method = "muc_online_rooms"
+    arguments = [StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('rooms')
+
+
+class MucOnlineRoomsByRegex(API):
+    method = "muc_online_rooms_bt_regex"
+    arguments = [StringArgument('service'), StringArgument('regex')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('rooms')
+
+
+class MucRegisterNick(API):
+    method = "muc_register_nick"
+    arguments = [StringArgument('nick'), StringArgument('service'), StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class MucUnRegisterNick(API):
+    method = "muc_unregister_nick"
+    arguments = [StringArgument('service'), StringArgument('service')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class SendMessage(API):
+    method = "send_message"
+    arguments = [StringArgument('type'), StringArgument('from'), StringArgument('to'), StringArgument('subject'),
+                 StringArgument('body')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class SetLast(API):
+    method = "set_last"
+    arguments = [StringArgument('user'), StringArgument('host'), IntegerSerializer('timestamp'),
+                 StringArgument('status')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class SubscribeRoom(API):
+    method = "subscribe_room"
+    # TODO: nodes must be separated by commas, so therefore you can use an array and before send transform arguments
+    arguments = [StringArgument('user'), StringArgument('nick'), StringArgument('room'),
+                 StringArgument('nodes')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('nodes')
+
+
+class UnSubscribeRoom(API):
+    method = "unsubscribe_room"
+    arguments = [StringArgument('user'), StringArgument('room')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
