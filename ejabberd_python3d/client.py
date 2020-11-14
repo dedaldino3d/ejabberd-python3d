@@ -5,8 +5,8 @@ import copy
 from urllib.parse import urlparse
 
 from ejabberd_python3d.core.errors import MissingArguments
-from .abc import api, methods
-from .defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT
+from ejabberd_python3d.abc import api, methods
+from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT
 
 
 class EjabberdAPIClient(api.EjabberdBaseAPI):
@@ -264,9 +264,9 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Ban an account: kick sessions and set random password
         """
-        return self._call_api('ban_account', {'user': user,
-                                              'host': host,
-                                              'reason': reason})
+        return self._call_api(methods.BanAccount, user=user,
+                              host=host,
+                              reason=reason)
 
     # TODO def change_room_option(self, name, service, option, value)
     # Change an option in a MUC room
@@ -275,24 +275,24 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Check if an account exists or not
         """
-        return self._call_api('check_account', {'user': user, 'host': host})
+        return self._call_api(methods.CheckAccount, user=user, host=host)
 
     def check_password(self, user, host, password):
         """
         Check if a password is correct
         """
-        return self._call_api('check_password', {'user': user,
-                                                 'host': host,
-                                                 'password': password})
+        return self._call_api(methods.CheckPassword, user=user,
+                              host=host,
+                              password=password)
 
     def check_password_hash(self, user, host, passwordhash, hashmethod):
         """
         Check if the password hash is correct
         """
-        return self._call_api('check_password_hash', {'user': user,
-                                                      'host': host,
-                                                      'passwordhash': passwordhash,
-                                                      'hashmethod': hashmethod})
+        return self._call_api(methods.CheckPasswordHash, user=user,
+                              host=host,
+                              passwordhash=passwordhash,
+                              hashmethod=hashmethod)
 
     # TODO def compile(self, file):
     # Recompile and reload Erlang source code file
@@ -301,25 +301,25 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         List all established sessions
         """
-        return self._call_api('connected_users')
+        return self._call_api(methods.ConnectedUsers)
 
     def connected_users_info(self):
         """
         List all established sessions and their information
         """
-        return self._call_api('connected_users_info')
+        return self._call_api(methods.ConnectedUsersInfo)
 
     def connected_users_number(self):
         """
         Get the number of established sessions
         """
-        return self._call_api('connected_users_number')
+        return self._call_api(methods.ConnectedUsersNumber)
 
     def connected_users_vhost(self, host):
         """
         Get the list of established sessions in a vhost
         """
-        return self._call_api('connected_users_vhost', {'host': host})
+        return self._call_api(methods.ConnectedUsersVhost, host=host)
 
     # TODO def convert_to_scram(self, host):
     # Convert the passwords in ‘users’ SQL table to SCRAM
@@ -340,7 +340,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Delete expired offline messages from database
         """
-        return self._call_api('delete_expired_messages')
+        return self._call_api(methods.DeleteExpiredMessages)
 
     # TODO def delete_mnesia(self, host):
     # Export all tables as SQL queries to a file
@@ -352,30 +352,30 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Delete offline messages older than DAYS
         """
-        return self._call_api('delete_old_messages', {'days': days})
+        return self._call_api(methods.DeleteOldMessages, days=days)
 
     def delete_old_users(self, days):
         """
         Delete users that didn't log in last days, or that never logged
         """
-        return self._call_api('delete_old_users', {'days': days})
+        return self._call_api(methods.DeleteOldUsers, days=days)
 
     def delete_old_users_vhost(self, host, days):
         """
         Delete users that didn't log in last days in vhost,
         or that never logged
         """
-        return self._call_api('delete_old_users_vhost',
-                              {'host': host, 'days': days})
+        return self._call_api(methods.DeleteOldUsersVhost,
+                              host=host, days=days)
 
     def delete_rosteritem(self, localuser, localserver, user, server):
         """
         Delete an item from a user's roster (self,supports ODBC):
         """
-        return self._call_api('delete_rosteritem', {'localuser': localuser,
-                                                    'localserver': localserver,
-                                                    'user': user,
-                                                    'server': server})
+        return self._call_api(methods.DeleteRosterItem, localuser=localuser,
+                              localserver=localserver,
+                              user=user,
+                              server=server)
 
     # TODO def destroy_room(self, name, service):
     # Destroy a MUC room
@@ -435,19 +435,19 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Get the Erlang cookie of this node
         """
-        return self._call_api('get_cookie')
+        return self._call_api(methods.GetCookie)
 
     def get_last(self, user, host):
         """
         Get last activity information (self,timestamp and status):
         """
-        return self._call_api('get_last', {'user': user, 'host': host})
+        return self._call_api(methods.GetLast, user=user, host=host)
 
     def get_loglevel(self):
         """
         Get the current loglevel
         """
-        return self._call_api('get_loglevel')
+        return self._call_api(methods.GetLogLevel)
 
     # TODO def get_offline_count(self):
     # Get the number of unread offline messages
@@ -486,10 +486,8 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
                                          {group,string}]}}}}
 
         """
-        try:
-            return self._call_api('get_roster', {'user': user, 'server': server})
-        except:
-            return self._call_api('get_roster', {'user': user, 'host': server})
+
+        return self._call_api(methods.GetRoster, user=user, server=server)
 
     # TODO get_subscribers(self, name, service):
     # List subscribers of a MUC conference
@@ -501,27 +499,27 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Get content from a vCard field
         """
-        return self._call_api('get_vcard', {'user': user,
-                                            'host': host,
-                                            'name': name})
+        return self._call_api(methods.GetVcard, user=user,
+                              host=host,
+                              name=name)
 
     def get_vcard2(self, user, host, name, subname):
         """
         Get content from a vCard field
         """
-        return self._call_api('get_vcard2', {'user': user,
-                                             'host': host,
-                                             'name': name,
-                                             'subname': subname})
+        return self._call_api(methods.GetVcard2, user=user,
+                              host=host,
+                              name=name,
+                              subname=subname)
 
     def get_vcard2_multi(self, user, host, name, subname):
         """
         Get multiple contents from a vCard field
         """
-        return self._call_api('get_vcard2_multi', {'user': user,
-                                                   'host': host,
-                                                   'name': name,
-                                                   'subname': subname})
+        return self._call_api(methods.GetVcard2Multi, user=user,
+                              host=host,
+                              name=name,
+                              subname=subname)
 
     # TODO def import_dir(self, file):
     # Import users data from jabberd14 spool dir
@@ -538,7 +536,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Number of incoming s2s connections on the node
         """
-        return self._call_api('incoming_s2s_number')
+        return self._call_api(methods.IncomingS2SNumber)
 
     # TODO def install_fallback(self, file):
     # Install the database from a fallback file
@@ -550,16 +548,16 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Kick a user session
         """
-        return self._call_api('kick_session', {'user': user,
-                                               'host': host,
-                                               'resource': resource,
-                                               'reason': reason})
+        return self._call_api(methods.KickSession, user=user,
+                              host=host,
+                              resource=resource,
+                              reason=reason)
 
     def kick_user(self, user, host):
         """
         Disconnect user's active sessions
         """
-        return self._call_api('kick_user', {'user': user, 'host': host})
+        return self._call_api(methods.KickUsers, user=user, host=host)
 
     # TODO def leave_cluster(self, node):
     # Remove node handled by Node from the cluster
@@ -574,7 +572,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
 
         """
         try:
-            return self._call_api('list_cluster')
+            return self._call_api(methods.ListCluster)
         except xmlrpc.client.Fault as e:
             msg = 'list_cluster is NOT available in your version of ejabberd'
             raise Exception('{}\n{}\n'.format(msg, e.message))
@@ -601,13 +599,13 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         List available modules
         """
-        return self._call_api('modules_available')
+        return self._call_api(methods.ModulesAvailable)
 
     def modules_installed(self):
         """
         List installed modules
         """
-        return self._call_api('modules_installed')
+        return self._call_api(methods.ModulesInstalled)
 
     # TODO def modules_update_specs(self):
 
@@ -621,19 +619,19 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Get number of users active in the last days
         """
-        return self._call_api('num_active_users', {'host': host, 'days': days})
+        return self._call_api(methods.NumActiveUsers, host=host, days=days)
 
     def num_resources(self, user, host):
         """
         Get the number of resources of a user
         """
-        return self._call_api('num_resources', {'user': user, 'host': host})
+        return self._call_api(methods.NumResources, user=user, host=host)
 
     def outgoing_s2s_number(self):
         """
         Number of outgoing s2s connections on the node
         """
-        return self._call_api('outgoing_s2s_number')
+        return self._call_api(methods.OutgoingS2SNumber)
 
     # TODO def privacy_set(self, user, host, xmlquery):
     # Send a IQ set privacy stanza for a local account
@@ -648,17 +646,17 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         List or delete rosteritems that match filtering options
         """
-        return self._call_api('process_rosteritems', {'action': action,
-                                                      'subs': subs,
-                                                      'asks': asks,
-                                                      'users': users,
-                                                      'contacts': contacts})
+        return self._call_api(methods.ProcessRosterItems, action=action,
+                              subs=subs,
+                              asks=asks,
+                              users=users,
+                              contacts=contacts)
 
     def push_alltoall(self, host, group):
         """
         Add all the users to all the users of Host in Group
         """
-        return self._call_api('push_alltoall', {'host': host, 'group': group})
+        return self._call_api(methods.PushAllToAll, host=host, group=group)
 
     # TODO def push_roster(self, file, user, host):
     # Push template roster from file to a user
@@ -670,7 +668,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         List all registered vhosts in SERVER
         """
-        return self._call_api('registered_vhosts')
+        return self._call_api(methods.RegisteredVhosts)
 
     def reload_config(self):
         """
@@ -678,33 +676,33 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
 
         (only affects ACL and Access)
         """
-        return self._call_api('reload_config')
+        return self._call_api(methods.ReloadConfig)
 
     def remove_node(self, node):
         """
         Remove an ejabberd node from Mnesia clustering config
         """
-        return self._call_api('remove_node', {'node': node})
+        return self._call_api(methods.RemoveNodes, node=node)
 
     def reopen_log(self):
         """
         Reopen the log files
         """
-        return self._call_api('reopen_log')
+        return self._call_api(methods.ReopenLog)
 
     def resource_num(self, user, host, num):
         """
         Resource string of a session number
         """
-        return self._call_api('resource_num', {'user': user,
-                                               'host': host,
-                                               'num': num})
+        return self._call_api(methods.ResourceNum, user=user,
+                              host=host,
+                              num=num)
 
     def restart(self):
         """
         Restart ejabberd
         """
-        return self._call_api('restart')
+        return self._call_api(methods.Restart)
 
     # TODO def restore(self, file):
     # Restore the database from backup file
@@ -730,11 +728,10 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Send a message to a local or remote bare of full JID
         """
-        return self._call_api('send_message', {'type': type,
-                                               'from': from_jid,
-                                               'to': to,
-                                               'subject': subject,
-                                               'body': body})
+        return self._call_api(methods.SendMessage, type=type,
+                              from=from_jid, to=to,
+                              subject=subject,
+                              body=body)
 
     # TODO def send_stanza(self, from, to, stanza):
     # Send a stanza; provide From JID and valid To JID
@@ -743,19 +740,19 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Send a stanza as if sent from a c2s session
         """
-        return self._call_api('send_stanza_c2s', {'user': user,
-                                                  'host': host,
-                                                  'resource': resource,
-                                                  'stanza': stanza})
+        return self._call_api(methods.SendStanzaC2S, user=user,
+                              host=host,
+                              resource=resource,
+                              stanza=stanza)
 
     def set_last(self, user, host, timestamp, status):
         """
         Set last activity information
         """
-        return self._call_api('set_last', {'user': user,
-                                           'host': host,
-                                           'timestamp': timestamp,
-                                           'status': status})
+        return self._call_api(methods.SetLast, user=user,
+                              host=host,
+                              timestamp=timestamp,
+                              status=status)
 
     def set_loglevel(self, loglevel):
         """
@@ -771,7 +768,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
 
         """
         try:
-            return self._call_api('set_loglevel', {'loglevel': loglevel})
+            return self._call_api(methods.SetLogLevel, loglevel=loglevel)
         except xmlrpc.Fault as e:
             msg = 'set_loglevel is NOT available in your version of ejabberd'
             raise Exception('{}\n{}\n'.format(msg, e.message))
@@ -780,27 +777,27 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Set master node of the clustered Mnesia tables
         """
-        return self._call_api('set_master', {'nodename': nodename})
+        return self._call_api(methods.SetMaster, nodename=nodename)
 
     def set_nickname(self, user, host, nickname):
         """
         Set nickname in a user's vCard
         """
-        return self._call_api('set_nickname', {'user': user,
-                                               'host': host,
-                                               'nickname': nickname})
+        return self._call_api(methods.SetNickname, user=user,
+                              host=host,
+                              nickname=nickname)
 
     def set_presence(self, user, host, resource, type, show, status, priority):
         """
         Set presence of a session
         """
-        return self._call_api('set_presence', {'user': user,
-                                               'host': host,
-                                               'resource': resource,
-                                               'type': type,
-                                               'show': show,
-                                               'status': status,
-                                               'priority': priority})
+        return self._call_api(methods.SetPresence, user=user,
+                              host=host,
+                              resource=resource,
+                              type=type,
+                              show=show,
+                              status=status,
+                              priority=priority)
 
     # TODO def set_room_affiliation(self, name, service, jid, affiliation):
     # Change an affiliation in a MUC room
@@ -809,82 +806,82 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Set content in a vCard field
         """
-        return self._call_api('set_vcard', {'user': user,
-                                            'host': host,
-                                            'name': name,
-                                            'content': content})
+        return self._call_api(methods.SetVcard, user=user,
+                              host=host,
+                              name=name,
+                              content=content)
 
     def set_vcard2(self, user, host, name, subname, content):
         """
         Set content in a vCard subfield
         """
-        return self._call_api('set_vcard2', {'user': user,
-                                             'host': host,
-                                             'name': name,
-                                             'subname': subname,
-                                             'content': content})
+        return self._call_api(methods.SetVcard2, user=user,
+                              host=host,
+                              name=name,
+                              subname=subname,
+                              content=content)
 
     def set_vcard2_multi(self, user, host, name, subname, contents):
         """
         *Set multiple contents in a vCard subfield
         """
-        return self._call_api('set_vcard2_multi', {'user': user,
-                                                   'host': host,
-                                                   'name': name,
-                                                   'subname': subname,
-                                                   'contents': contents})
+        return self._call_api(methods.SetVcardMulti, user=user,
+                              host=host,
+                              name=name,
+                              subname=subname,
+                              contents=contents)
 
     def srg_create(self, group, host, name, description, display):
         """
         Create a Shared Roster Group
         """
-        return self._call_api('srg_create', {'group': group,
-                                             'host': host,
-                                             'name': name,
-                                             'description': description,
-                                             'display': display})
+        return self._call_api(methods.SrgCreate, group=group,
+                              host=host,
+                              name=name,
+                              description=description,
+                              display=display)
 
     def srg_delete(self, group, host):
         """
         Delete a Shared Roster Group
         """
-        return self._call_api('srg_delete', {'group': group, 'host': host})
+        return self._call_api(methods.SrgDelete, group=group, host=host)
 
     def srg_get_info(self, group, host):
         """
         Get info of a Shared Roster Group
         """
-        return self._call_api('srg_get_info', {'group': group, 'host': host})
+        return self._call_api(methods.SrgGetInfo, group=group, host=host)
 
     def srg_get_members(self, group, host):
         """
         Get members of a Shared Roster Group
         """
-        return self._call_api('srg_get_members', {'group': group, 'host': host})
+        return self._call_api(methods.SrgGetMembers, group=group, host=host)
 
     def srg_list(self, host):
         """
         List the Shared Roster Groups in Host
         """
-        return self._call_api('srg_list', {'host': host})
+        return self._call_api(methods.SrgList, host=host)
 
     def srg_user_add(self, user, host, group, grouphost):
         """
         Add the JID user@host to the Shared Roster Group
         """
-        return self._call_api('srg_user_add', {'user': user,
-                                               'host': host,
-                                               'group': group,
-                                               'grouphost': grouphost})
+        return self._call_api(methods.SrgUserAdd, user=user,
+                              host=host,
+                              group=group,
+                              grouphost=grouphost)
 
     def srg_user_del(self, user, host, group, grouphost):
         """
         Delete this JID user@host from the Shared Roster Group
         """
-        return self._call_api('srg_user_del', {'user': user,
-                                               'host': host,
-                                               'group': group,
-                                               'grouphost': grouphost})
+        return self._call_api(methods.SrgUserDel, user=user,
+                              host=host,
+                              group=group,
+                              grouphost=grouphost)
 
     def stats(self, name):
         """
@@ -897,7 +894,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         * ``processes`` - Introduced sometime after Ejabberd 15.07
         """
         try:
-            return self._call_api('stats', {'name': name})
+            return self._call_api(methods.Stats, name=name)
         except Exception as e:
             msg = 'processes stats NOT available in this version of Ejabberd'
             if e.message == self.errors['connect']:
@@ -911,50 +908,50 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         * ``registeredusers``
         * ``onlineusers``
         """
-        return self._call_api('stats_host', {'name': name, 'host': host})
+        return self._call_api(methods.StatsHost, name=name, host=host)
 
     def status(self):
         """
         Get ejabberd status
         """
-        return self._call_api('status')
+        return self._call_api(methods.Status)
 
     def status_list(self, status):
         """
         List of logged users with this status
         """
-        return self._call_api('status_list', {'status': status})
+        return self._call_api(methods.StatusList, status=status)
 
     def status_list_host(self, host, status):
         """
         List of users logged in host with their statuses
         """
-        return self._call_api('status_list_host', {'host': host, 'status': status})
+        return self._call_api(methods.StatusListHost, host=host, status=status)
 
     def status_num(self, status):
         """
         Number of logged users with this status
         """
-        return self._call_api('status_num', {'status': status})
+        return self._call_api(methods.StatusNum, status=status)
 
     def status_num_host(self, host, status):
         """
         Number of logged users with this status in host
         """
-        return self._call_api('status_num_host', {'host': host, 'status': status})
+        return self._call_api(methods.StatusNumHost, host=host, status=status)
 
     def stop(self):
         """
         Stop ejabberd
         """
-        return self._call_api('stop')
+        return self._call_api(methods.Stop)
 
     def stop_kindly(self, delay, announcement):
         """
         Inform users and rooms, wait, and stop the server
         """
-        return self._call_api('stop_kindly',
-                              {'delay': delay, 'announcement': announcement})
+        return self._call_api(methods.StopKindly,
+                              delay=delay, announcement=announcement)
 
     # TODO def subscribe_room(self, user, nick, room, nodes):
     # Subscribe to a MUC conference
@@ -963,7 +960,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Unregister a user
         """
-        return self._call_api('unregister', {'user': user, 'host': host})
+        return self._call_api(methods.Unregister, user=user, host=host)
 
     # TODO def unsubscribe_room(self, user, room):
     # Unsubscribe from a MUC conference
@@ -972,13 +969,13 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         Update the given module, or use the keyword: all
         """
-        return self._call_api('update', {'module': module})
+        return self._call_api(methods.Update, module=module)
 
     def update_list(self):
         """
         List modified modules that can be updated
         """
-        return self._call_api('update_list')
+        return self._call_api(methods.UpdateList)
 
     def user_resources(self, user, server):
         """
@@ -998,13 +995,10 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         {resources,{list,{resource,string}}}
 
         """
-        try:
-            return self._call_api('user_resources', {'user': user, 'server': server})
-        except Exception:
-            return self._call_api('user_resources', {'user': user, 'host': server})
+        return self._call_api(methods.UserResources, user=user, server=server)
 
     def user_sessions_info(self, user, host):
         """
         Get information about all sessions of a user
         """
-        return self._call_api('user_sessions_info', {'user': user, 'host': host})
+        return self._call_api(methods.UserSessionInfo, user=user, host=host)
