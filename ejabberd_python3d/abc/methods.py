@@ -1,13 +1,13 @@
 from __future__ import unicode_literals
 
-from ..abc.api import API
-from ..core.errors import UserAlreadyRegisteredError
-from ..core.utils import format_password_hash_sha
-from ..defaults.arguments import StringArgument
-from ..muc import muc_room_options_serializers
-from ..muc.arguments import MUCRoomArgument, AffiliationArgument
-from ..muc.enums import Affiliation, MUCRoomOption
-from ..serializers import StringSerializer, IntegerSerializer
+from ejabberd_python3d.abc.api import API
+from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
+from ejabberd_python3d.core.utils import format_password_hash_sha
+from ejabberd_python3d.defaults.arguments import StringArgument
+from ejabberd_python3d.muc import muc_room_options_serializers
+from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
+from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption
+from ejabberd_python3d.serializers import StringSerializer, IntegerSerializer
 
 
 class Echo(API):
@@ -218,7 +218,7 @@ class DeleteRosterItem(API):
 
 class GetRoster(API):
     method = 'get_roster'
-    arguments = [StringArgument('user'), StringArgument('host')]
+    arguments = [StringArgument('user'), StringArgument('server')]
 
     def transform_response(self, api, arguments, response):
         roster = []
