@@ -850,3 +850,11 @@ class UpdateSql(object):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class UserResources(API):
+    method = "update_sql"
+    arguments = [StringArgument("user"), StringArgument("server")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("resources")
