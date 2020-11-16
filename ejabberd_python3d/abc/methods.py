@@ -770,3 +770,43 @@ class StatsHost(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("stat")
+
+
+class Status(API):
+    method = "status"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res")
+
+
+class StatusList(API):
+    method = "status_list"
+    arguments = [StringArgument("status")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("users")
+
+
+class StatusListHost(API):
+    method = "status_list_host"
+    arguments = [StringArgument("host"), StringArgument("status")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("users")
+
+
+class StatusNum(API):
+    method = "status_num"
+    arguments = [StringArgument("status")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("users")
+
+
+class StatusNumHost(API):
+    method = "status_num_host"
+    arguments = [StringArgument("host"), StringArgument("status")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("users")
