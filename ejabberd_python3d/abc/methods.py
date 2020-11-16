@@ -480,4 +480,20 @@ class GetCookie(API):
     arguments = []
 
     def transform_response(self, api, arguments, response):
-        return response.get('res')
+        return response.get('cookie')
+
+
+class GetLogLevel(API):
+    method = "get_loglevel"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get('levelatom ')
+
+
+class GetVcard(API):
+    method = "get_vcard"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('name')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('content')
