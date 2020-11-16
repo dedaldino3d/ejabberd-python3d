@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from ejabberd_python3d.abc.api import API
 from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
 from ejabberd_python3d.core.utils import format_password_hash_sha
-from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument
+from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument
 from ejabberd_python3d.muc import muc_room_options_serializers
 from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
 from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption
@@ -449,3 +449,19 @@ class DeleteExpiredMessages(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
+
+
+class DeleteOldMessages(API):
+    method = "delete_old_messages"
+    arguments = [PositiveIntegerArgument('days')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class DeleteOldUsers(API):
+    method = "delete_old_users"
+    arguments = [PositiveIntegerArgument('days')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res')
