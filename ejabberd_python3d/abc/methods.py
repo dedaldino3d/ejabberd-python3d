@@ -712,3 +712,19 @@ class SrgDelete(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class SrgGetInfo(object):
+    method = "srg_get_info"
+    arguments = [StringArgument("group"), StringArgument("host")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("informations")
+
+
+class SrgGetMembers(object):
+    method = "srg_get_members"
+    arguments = [StringArgument("group"), StringArgument("host")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("members")
