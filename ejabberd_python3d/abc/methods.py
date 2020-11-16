@@ -695,3 +695,20 @@ class SetVcardMulti(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class SrgCreate(API):
+    method = "srg_create"
+    arguments = [StringArgument("group"), StringArgument("host"), StringArgument("name"), StringArgument("description"),
+                 StringArgument("display")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SrgDelete(API):
+    method = "srg_delete"
+    arguments = [StringArgument("group"), StringArgument("host")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
