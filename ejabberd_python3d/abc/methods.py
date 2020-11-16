@@ -618,3 +618,19 @@ class ResourceNum(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("resource")
+
+
+class Restart(API):
+    method = "restart"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SendStanzaC2S(API):
+    method = "send_stanza_c2s"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('resource'), StringArgument('stanza')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
