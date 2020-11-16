@@ -858,3 +858,11 @@ class UserResources(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("resources")
+
+
+class KickUser(API):
+    method = "kick_user"
+    arguments = [StringArgument("user"), StringArgument("host")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("num_resources")

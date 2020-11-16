@@ -407,31 +407,25 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     # Generates markdown documentation for ejabberd_commands
 
     def muc_online_rooms(self, host=None):
-        pass
+        return self._call_api(methods.MucOnlineRooms, host=host)
 
     def create_room(self, name, service, host):
-        pass
+        return self._call_api(methods.CreateRoom, name=name, service=service, host=host)
 
     def destroy_room(self, name, service, host):
-        pass
+        return self._call_api(methods.DestroyRoom, name=name, service=service, host=host)
 
     def get_room_options(self, name, service):
-        pass
+        return self._call_api(methods.GetRoomOptions, name=name, service=service)
 
     def change_room_option(self, name, service, option, value):
-        pass
+        return self._call_api(methods.ChangeRoomOption, name=name, service=service, option=option, value=value)
 
     def set_room_affiliation(self, name, service, jid, affiliation):
-        pass
+        return self._call_api(methods.GetRoomAffiliation, name=name, service=service, jid=jid, affiliation=affiliation)
 
     def get_room_affiliations(self, name, service):
-        pass
-
-    def add_roster_item(self, localuser, localserver, user, server, nick, group, subs):
-        pass
-
-    def remove_rosteritem(self, localuser, localserver, user, server):
-        pass
+        return self._call_api(methods.GetRoomAffiliations, name=name, service=service)
 
     def get_cookie(self):
         """
@@ -559,7 +553,7 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         Disconnect user's active sessions
         """
-        return self._call_api(methods.KickUsers, user=user, host=host)
+        return self._call_api(methods.KickUser, user=user, host=host)
 
     # TODO def leave_cluster(self, node):
     # Remove node handled by Node from the cluster
@@ -886,11 +880,9 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         try:
             return self._call_api(methods.Stats, name=name)
-        except Exception as e:
+        except xmlrpc_client.Fault as e:
             msg = 'processes stats NOT available in this version of Ejabberd'
-            if e.message == self.errors['connect']:
-                raise Exception('{}\n{}\n'.format(msg, e.message))
-            raise Exception(e)
+            raise Exception('{}\n{} - code: {}\n'.format(msg, e.faultString, e.faultCode))
 
     def stats_host(self, name, host):
         """
@@ -947,12 +939,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     # TODO def subscribe_room(self, user, nick, room, nodes):
     # Subscribe to a MUC conference
 
-    def unregister(self, user, host):
-        """
-        Unregister a user
-        """
-        return self._call_api(methods.Unregister, user=user, host=host)
-
     # TODO def unsubscribe_room(self, user, room):
     # Unsubscribe from a MUC conference
 
@@ -967,6 +953,12 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         List modified modules that can be updated
         """
         return self._call_api(methods.UpdateList)
+
+    def update_sql(self):
+        """
+        List modified modules that can be updated
+        """
+        return self._call_api(methods.UpdateSql)
 
     def user_resources(self, user, server):
         """

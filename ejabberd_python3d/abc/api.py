@@ -465,12 +465,6 @@ class EjabberdBaseAPI(ABC):
 
     # TODO def muc_unregister_nick(self, nick):
     # Unregister the nick in the MUC service
-    @abstractmethod
-    def num_active_users(self, host, days):
-        """
-        Get number of users active in the last days
-        """
-        pass
 
     @abstractmethod
     def num_resources(self, user, host):
@@ -526,13 +520,6 @@ class EjabberdBaseAPI(ABC):
         Reload ejabberd configuration file into memory
 
         (only affects ACL and Access)
-        """
-        pass
-
-    @abstractmethod
-    def remove_node(self, node):
-        """
-        Remove an ejabberd node from Mnesia clustering config
         """
         pass
 
