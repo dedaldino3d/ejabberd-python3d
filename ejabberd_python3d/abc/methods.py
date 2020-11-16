@@ -394,8 +394,15 @@ class MucUnRegisterNick(API):
 
 class SendMessage(API):
     method = "send_message"
-    arguments = [StringArgument('type'), StringArgument('from'), StringArgument('to'), StringArgument('subject'),
-                 StringArgument('body')]
+    arguments = [StringArgument('type'), StringArgument('from'), StringArgument('to'),
+                 StringArgument('subject', required=False), StringArgument('body')]
+
+    def transform_arguments(self, **kwargs):
+        from_jid = kwargs.pop('from_jid')
+        kwargs.update({
+            'from': from_jid
+        })
+        return kwargs
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0

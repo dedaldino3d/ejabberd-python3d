@@ -2,29 +2,31 @@ from __future__ import print_function
 
 import xmlrpc
 import copy
+from xmlrpc import client as xmlrpc_client
 from urllib.parse import urlparse
 
 from ejabberd_python3d.core.errors import MissingArguments
-from ejabberd_python3d.abc import api, methods
-from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT
+from ejabberd_python3d.abc import methods
+from ejabberd_python3d.abc.api import API, APIArgument, EjabberdBaseAPI
+from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT, XMLRPC_API_SERVER, \
+    XMLRPC_API_PORT
 
 
-class EjabberdAPIClient(api.EjabberdBaseAPI):
+class EjabberdAPIClient(EjabberdBaseAPI):
     """
     Python client for Ejabberd XML-RPC Administration API.
     """
 
-    def __init__(self, host, username, password, server='127.0.0.1', port=4560, protocol='http', admin=True,
+    def __init__(self, host, username, password, server='localhost', port=4560, protocol='http', admin=True,
                  verbose=False):
         """
         Init XML-RPC server proxy.
         """
-        super().__init__(self)
         self.host = host
         self.username = username
         self.password = password
-        self.server = server
-        self.port = port
+        self.server = server or XMLRPC_API_SERVER
+        self.port = port or XMLRPC_API_PORT
         self.admin = admin
         self.protocol = protocol or XMLRPC_API_PROTOCOL
         self.verbose = verbose
@@ -76,7 +78,8 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         Returns the FQDN to the Ejabberd server's XML-RPC endpoint
         :return:
         """
-        return "{}://{}:{}/".format(self.protocol, self.host, self.port)
+        # TODO: add endpoint parameter
+        return "{}://{}:{}".format(self.protocol, self.host, self.port)
 
     @property
     def server_proxy(self):
@@ -84,7 +87,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         Returns the proxy object that is used to perform the calls to the XML-RPC endpoint
         """
         if self._server_proxy is None:
-            self._server_proxy = xmlrpc.client.ServerProxy(self.service_url, verbose=(1 if self.verbose else 0))
+            self._server_proxy = xmlrpc_client.ServerProxy(self.service_url, verbose=(1 if self.verbose else 0))
         return self._server_proxy
 
     @property
@@ -95,13 +98,14 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         return {
             'user': self.username,
             'server': self.server,
-            'password': self.password
+            'password': self.password,
+            'admin': self.admin
         }
 
-    def _validate_and_serialize_arguments(self, api, arguments):
+    def _validate_and_serialize_arguments(self, api_class, arguments):
         """
         Internal method to validate and serialize arguments
-        :param api: An instance of an API class
+        :param api_class: An instance of an API class
         :param arguments: A dictionary of arguments that will be passed to the method
         :type arguments: dict
         :rtype: dict
@@ -109,9 +113,9 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         ser_args = {}
 
-        for i in range(len(api.arguments)):
-            arg_desc = api.arguments[i]
-            assert isinstance(arg_desc, api.APIArgument)
+        for i in range(len(api_class.arguments)):
+            arg_desc = api_class.arguments[i]
+            assert isinstance(arg_desc, APIArgument)
 
             # validate argument presence
             arg_name = str(arg_desc.name)
@@ -145,8 +149,9 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         :rtype: object
         :return: Returns return value of the XMLRPC Method call
         """
+
         # validate api_class
-        assert issubclass(api_class, api.API)
+        assert issubclass(api_class, API)
 
         # create api instance
         api = api_class()
@@ -158,16 +163,22 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         # validate and serialize arguments
         args = self._validate_and_serialize_arguments(api, args)
         # retrieve method
-        method = getattr(self.server_proxy, str(api.method))
+        try:
+            method = getattr(self.server_proxy, str(api.method))
+        except xmlrpc_client.Fault as e:
+            raise Exception(f"Error: {e}")
 
         # print method call with arguments
         self._report_method_call(api.method, args)
 
         # perform call
-        if not api.authenticate:
-            response = method(args)
-        else:
-            response = method(self.auth, args)
+        try:
+            if not api.authenticate:
+                response = method(args)
+            else:
+                response = method(self.auth, args)
+        except xmlrpc_client.Fault as e:
+            raise Exception(f"Error: {e}")
 
         # validate response
         api.validate_response(api, args, response)
@@ -573,7 +584,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         try:
             return self._call_api(methods.ListCluster)
-        except xmlrpc.client.Fault as e:
+        except xmlrpc_client.Fault as e:
             msg = 'list_cluster is NOT available in your version of ejabberd'
             raise Exception('{}\n{}\n'.format(msg, e.message))
 
@@ -724,12 +735,13 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
     #                                 users):
     # Send a direct invitation to several destinations
 
-    def send_message(self, type, from_jid, to, subject, body):
+    def send_message(self, type, from_jid, to, body, subject=""):
         """
         Send a message to a local or remote bare of full JID
         """
+        # noinspection PyTypeChecker
         return self._call_api(methods.SendMessage, type=type,
-                              from=from_jid, to=to,
+                              from_jid=from_jid, to=to,
                               subject=subject,
                               body=body)
 
@@ -769,7 +781,7 @@ class EjabberdAPIClient(api.EjabberdBaseAPI):
         """
         try:
             return self._call_api(methods.SetLogLevel, loglevel=loglevel)
-        except xmlrpc.Fault as e:
+        except xmlrpc_client.Fault as e:
             msg = 'set_loglevel is NOT available in your version of ejabberd'
             raise Exception('{}\n{}\n'.format(msg, e.message))
 
