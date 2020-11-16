@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 from ejabberd_python3d.abc.api import API
 from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
 from ejabberd_python3d.core.utils import format_password_hash_sha
-from ejabberd_python3d.defaults.arguments import StringArgument
+from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument
 from ejabberd_python3d.muc import muc_room_options_serializers
 from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
 from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption
-from ejabberd_python3d.serializers import StringSerializer, IntegerSerializer
+from ejabberd_python3d.serializers import StringSerializer
 
 
 class Echo(API):
@@ -403,7 +403,7 @@ class SendMessage(API):
 
 class SetLast(API):
     method = "set_last"
-    arguments = [StringArgument('user'), StringArgument('host'), IntegerSerializer('timestamp'),
+    arguments = [StringArgument('user'), StringArgument('host'), IntegerArgument('timestamp'),
                  StringArgument('status')]
 
     def transform_response(self, api, arguments, response):

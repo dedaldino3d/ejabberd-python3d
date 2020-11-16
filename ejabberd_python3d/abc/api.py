@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from enum import Enum as BaseClassEnum
 
 
-class APIArgumentSerializer(ABCMeta):
+class APIArgumentSerializer(ABC):
     @abstractmethod
     def to_api(self, value):
         pass
@@ -14,14 +14,13 @@ class APIArgumentSerializer(ABCMeta):
         pass
 
 
-class APIArgument(ABCMeta):
+class APIArgument(ABC):
     def __init__(self, name, description=None, required=True, **kwargs):
         self.name = name
         self.description = description
         self.required = required
 
     @abstractmethod
-    @property
     def serializer_class(self):
         pass
 
@@ -36,9 +35,8 @@ class Enum(BaseClassEnum):
         return cls(value)
 
 
-class API(ABCMeta):
+class API(ABC):
     @abstractmethod
-    @property
     def method(self):
         """
         Return the exact name of the XML-RPC API method to call
@@ -46,7 +44,6 @@ class API(ABCMeta):
         pass
 
     @abstractmethod
-    @property
     def arguments(self):
         """
         Return an (ordered) list of APIArgument objects
@@ -88,7 +85,7 @@ class API(ABCMeta):
         return response
 
 
-class EjabberdBaseAPI(ABCMeta):
+class EjabberdBaseAPI(ABC):
     @abstractmethod
     def echo(self, sentence):
         pass

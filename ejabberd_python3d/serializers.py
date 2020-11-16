@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from six import string_types
 
-from .abc.api import Enum, APIArgumentSerializer
+from ejabberd_python3d.abc.api import Enum, APIArgumentSerializer
 
 
 class StringSerializer(APIArgumentSerializer):
@@ -51,9 +51,8 @@ class BooleanSerializer(APIArgumentSerializer):
         return value == 'true'
 
 
-class EnumSerializer(ABCMeta, StringSerializer):
+class EnumSerializer(StringSerializer):
     @abstractmethod
-    @property
     def enum_class(self):
         pass
 
