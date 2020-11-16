@@ -728,3 +728,27 @@ class SrgGetMembers(object):
 
     def transform_response(self, api, arguments, response):
         return response.get("members")
+
+
+class SrgList(API):
+    method = "srg_list"
+    arguments = [StringArgument("host")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("groups")
+
+
+class SrgUserAdd(API):
+    method = "srg_user_add"
+    arguments = [StringArgument("user"), StringArgument("host"), StringArgument("group"), StringArgument("grouphost")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SrgUserDel(API):
+    method = "srg_user_del"
+    arguments = [StringArgument("user"), StringArgument("host"), StringArgument("group"), StringArgument("grouphost")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
