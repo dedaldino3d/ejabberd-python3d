@@ -553,3 +553,19 @@ class ModulesInstalled(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("modules")
+
+
+class NumResources(API):
+    method = "num_resources"
+    arguments = [StringArgument('user'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("resources")
+
+
+class OutgoingS2SNumber(API):
+    method = "outgoing_s2s_number"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get('s2s_outgoing')

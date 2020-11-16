@@ -1,14 +1,13 @@
 from __future__ import print_function
 
-import xmlrpc
 import copy
-from xmlrpc import client as xmlrpc_client
 from urllib.parse import urlparse
+from xmlrpc import client as xmlrpc_client
 
-from ejabberd_python3d.core.errors import MissingArguments
 from ejabberd_python3d.abc import methods
 from ejabberd_python3d.abc.api import API, APIArgument, EjabberdBaseAPI
-from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_PORT, XMLRPC_API_SERVER, \
+from ejabberd_python3d.core.errors import MissingArguments
+from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API_SERVER, \
     XMLRPC_API_PORT
 
 
@@ -17,18 +16,18 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     Python client for Ejabberd XML-RPC Administration API.
     """
 
-    def __init__(self, host, username, password, server='localhost', port=4560, protocol='http', admin=True,
-                 verbose=False):
+    def __init__(self, host, username, password, server=XMLRPC_API_SERVER, port=XMLRPC_API_PORT,
+                 protocol=XMLRPC_API_PROTOCOL, admin=True, verbose=False):
         """
         Init XML-RPC server proxy.
         """
         self.host = host
         self.username = username
         self.password = password
-        self.server = server or XMLRPC_API_SERVER
-        self.port = port or XMLRPC_API_PORT
+        self.server = server
+        self.port = port
         self.admin = admin
-        self.protocol = protocol or XMLRPC_API_PROTOCOL
+        self.protocol = protocol
         self.verbose = verbose
         self._server_proxy = None
 
@@ -166,7 +165,8 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         try:
             method = getattr(self.server_proxy, str(api.method))
         except xmlrpc_client.Fault as e:
-            raise Exception(f"Error: {e}")
+            # TODO: add it to logger
+            raise Exception(f"{e.faultString} - code: {e.faultCode}")
 
         # print method call with arguments
         self._report_method_call(api.method, args)
@@ -178,7 +178,7 @@ class EjabberdAPIClient(EjabberdBaseAPI):
             else:
                 response = method(self.auth, args)
         except xmlrpc_client.Fault as e:
-            raise Exception(f"Error: {e}")
+            raise Exception(f"{e.faultString} - code: {e.faultCode}")
 
         # validate response
         api.validate_response(api, args, response)
@@ -261,13 +261,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         Add an item to a user's roster (self,supports ODBC):
         """
-        return self._call_api('add_rosteritem', {'localuser': localuser,
-                                                 'localserver': localserver,
-                                                 'user': user,
-                                                 'server': server,
-                                                 'nick': nick,
-                                                 'group': group,
-                                                 'subs': subs})
+        return self._call_api(methods.AddRosterItem, localuser=localuser,
+                              localserver=localserver,
+                              user=user,
+                              server=server,
+                              nick=nick,
+                              group=group,
+                              subs=subs)
 
     # TODO def backup(self, file): Store the database to backup file
 
@@ -295,15 +295,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         return self._call_api(methods.CheckPassword, user=user,
                               host=host,
                               password=password)
-
-    def check_password_hash(self, user, host, passwordhash, hashmethod):
-        """
-        Check if the password hash is correct
-        """
-        return self._call_api(methods.CheckPasswordHash, user=user,
-                              host=host,
-                              passwordhash=passwordhash,
-                              hashmethod=hashmethod)
 
     # TODO def compile(self, file):
     # Recompile and reload Erlang source code file
@@ -586,7 +577,7 @@ class EjabberdAPIClient(EjabberdBaseAPI):
             return self._call_api(methods.ListCluster)
         except xmlrpc_client.Fault as e:
             msg = 'list_cluster is NOT available in your version of ejabberd'
-            raise Exception('{}\n{}\n'.format(msg, e.message))
+            raise Exception('{}\n{}\n - code: {}'.format(msg, e.faultString, e.faultCode))
 
     # TODO def load(self, file):
     # Restore the database from text file
@@ -625,12 +616,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     # TODO def muc_unregister_nick(self, nick):
     # Unregister the nick in the MUC service
-
-    def num_active_users(self, host, days):
-        """
-        Get number of users active in the last days
-        """
-        return self._call_api(methods.NumActiveUsers, host=host, days=days)
 
     def num_resources(self, user, host):
         """
@@ -783,7 +768,7 @@ class EjabberdAPIClient(EjabberdBaseAPI):
             return self._call_api(methods.SetLogLevel, loglevel=loglevel)
         except xmlrpc_client.Fault as e:
             msg = 'set_loglevel is NOT available in your version of ejabberd'
-            raise Exception('{}\n{}\n'.format(msg, e.message))
+            raise Exception('{}\n{} - code: {}\n '.format(msg, e.faultString, e.faultCode))
 
     def set_master(self, nodename):
         """
