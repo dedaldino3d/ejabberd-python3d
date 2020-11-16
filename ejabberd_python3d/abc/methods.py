@@ -826,3 +826,27 @@ class StopKindly(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class Update(API):
+    method = "update"
+    arguments = [StringArgument("module")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res")
+
+
+class UpdateList(API):
+    method = "update_list"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("modules")
+
+
+class UpdateSql(object):
+    method = "update_sql"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
