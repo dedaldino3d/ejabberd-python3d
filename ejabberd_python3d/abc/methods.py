@@ -465,3 +465,19 @@ class DeleteOldUsers(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res')
+
+
+class DeleteOldUsersVhost(API):
+    method = "delete_old_users_vhost"
+    arguments = [StringArgument('host'), PositiveIntegerArgument('days')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res')
+
+
+class GetCookie(API):
+    method = "get_cookie"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res')
