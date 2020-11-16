@@ -497,3 +497,19 @@ class GetVcard(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('content')
+
+
+class GetVcard2(API):
+    method = "get_vcard2"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('name'), StringArgument('subname')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("content")
+
+
+class GetVcard2Multi(API):
+    method = "get_vcard2_multi"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('name'), StringArgument('subname')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("contents")
