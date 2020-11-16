@@ -674,12 +674,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.ReloadConfig)
 
-    def remove_node(self, node):
-        """
-        Remove an ejabberd node from Mnesia clustering config
-        """
-        return self._call_api(methods.RemoveNodes, node=node)
-
     def reopen_log(self):
         """
         Reopen the log files

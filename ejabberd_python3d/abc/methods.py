@@ -602,3 +602,19 @@ class ReloadConfig(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class ReopenLog(API):
+    method = "reopen_log"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class ResourceNum(API):
+    method = "resource_num"
+    arguments = [StringArgument('user'), StringArgument('host'), PositiveIntegerArgument('num')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("resource")
