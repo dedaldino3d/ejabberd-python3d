@@ -586,3 +586,19 @@ class PushAllToAll(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class RegisteredVhosts(API):
+    method = "registered_vhosts"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("vhosts")
+
+
+class ReloadConfig(API):
+    method = "reload_config"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
