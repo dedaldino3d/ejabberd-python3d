@@ -513,3 +513,19 @@ class GetVcard2Multi(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("contents")
+
+
+class IncomingS2SNumber(API):
+    method = "incoming_s2s_number"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("s2s_incoming")
+
+
+class KickSession(API):
+    method = "kick_session"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('resource'), StringArgument('reason')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
