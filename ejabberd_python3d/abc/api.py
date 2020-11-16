@@ -88,71 +88,71 @@ class API(ABC):
 class EjabberdBaseAPI(ABC):
     @abstractmethod
     def echo(self, sentence):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def registered_users(self, host):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def register(self, user, host, password):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def unregister(self, user, host):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def change_password(self, user, host, password, newpass):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def check_password_hash(self, user, host, password):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def connected_users(self):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def connected_users_info(self):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def connected_users_number(self):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def user_sessions_info(self):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def muc_online_rooms(self, host=None):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def create_room(self, name, service, host):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def destroy_room(self, name, service, host):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_room_options(self, name, service):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def change_room_option(self, name, service, option, value):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_room_affiliation(self, name, service, jid, affiliation):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_room_affiliations(self, name, service):
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def add_rosteritem(self,
@@ -162,7 +162,7 @@ class EjabberdBaseAPI(ABC):
         """
         Add an item to a user's roster (self,supports ODBC):
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def backup(self, file): Store the database to backup file
 
@@ -171,7 +171,7 @@ class EjabberdBaseAPI(ABC):
         """
         Ban an account: kick sessions and set random password
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def change_room_option(self, name, service, option, value)
     # Change an option in a MUC room
@@ -181,14 +181,14 @@ class EjabberdBaseAPI(ABC):
         """
         Check if an account exists or not
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def check_password(self, user, host, password):
         """
         Check if a password is correct
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def compile(self, file):
     # Recompile and reload Erlang source code file
@@ -198,7 +198,7 @@ class EjabberdBaseAPI(ABC):
         """
         Get the list of established sessions in a vhost
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def convert_to_scram(self, host):
     # Convert the passwords in ‘users’ SQL table to SCRAM
@@ -220,7 +220,7 @@ class EjabberdBaseAPI(ABC):
         """
         Delete expired offline messages from database
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def delete_mnesia(self, host):
     # Export all tables as SQL queries to a file
@@ -233,14 +233,14 @@ class EjabberdBaseAPI(ABC):
         """
         Delete offline messages older than DAYS
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def delete_old_users(self, days):
         """
         Delete users that didn't log in last days, or that never logged
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def delete_old_users_vhost(self, host, days):
@@ -248,14 +248,14 @@ class EjabberdBaseAPI(ABC):
         Delete users that didn't log in last days in vhost,
         or that never logged
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def delete_rosteritem(self, localuser, localserver, user, server):
         """
         Delete an item from a user's roster (self,supports ODBC):
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def destroy_room(self, name, service):
     # Destroy a MUC room
@@ -288,21 +288,21 @@ class EjabberdBaseAPI(ABC):
         """
         Get the Erlang cookie of this node
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_last(self, user, host):
         """
         Get last activity information (self,timestamp and status):
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_loglevel(self):
         """
         Get the current loglevel
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def get_offline_count(self):
     # Get the number of unread offline messages
@@ -341,7 +341,7 @@ class EjabberdBaseAPI(ABC):
                                          {group,string}]}}}}
 
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO get_subscribers(self, name, service):
     # List subscribers of a MUC conference
@@ -353,21 +353,21 @@ class EjabberdBaseAPI(ABC):
         """
         Get content from a vCard field
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_vcard2(self, user, host, name, subname):
         """
         Get content from a vCard field
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def get_vcard2_multi(self, user, host, name, subname):
         """
         Get multiple contents from a vCard field
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def import_dir(self, file):
     # Import users data from jabberd14 spool dir
@@ -384,7 +384,7 @@ class EjabberdBaseAPI(ABC):
         """
         Number of incoming s2s connections on the node
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def install_fallback(self, file):
     # Install the database from a fallback file
@@ -396,14 +396,14 @@ class EjabberdBaseAPI(ABC):
         """
         Kick a user session
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def kick_user(self, user, host):
         """
         Disconnect user's active sessions
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def leave_cluster(self, node):
     # Remove node handled by Node from the cluster
@@ -417,7 +417,7 @@ class EjabberdBaseAPI(ABC):
         {nodes,{list,{node,atom}}}
 
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def load(self, file):
     # Restore the database from text file
@@ -441,14 +441,14 @@ class EjabberdBaseAPI(ABC):
         """
         List available modules
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def modules_installed(self):
         """
         List installed modules
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def modules_update_specs(self):
 
@@ -463,14 +463,14 @@ class EjabberdBaseAPI(ABC):
         """
         Get the number of resources of a user
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def outgoing_s2s_number(self):
         """
         Number of outgoing s2s connections on the node
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def privacy_set(self, user, host, xmlquery):
     # Send a IQ set privacy stanza for a local account
@@ -485,14 +485,14 @@ class EjabberdBaseAPI(ABC):
         """
         List or delete rosteritems that match filtering options
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def push_alltoall(self, host, group):
         """
         Add all the users to all the users of Host in Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def push_roster(self, file, user, host):
     # Push template roster from file to a user
@@ -504,7 +504,7 @@ class EjabberdBaseAPI(ABC):
         """
         List all registered vhosts in SERVER
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def reload_config(self):
@@ -513,28 +513,28 @@ class EjabberdBaseAPI(ABC):
 
         (only affects ACL and Access)
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def reopen_log(self):
         """
         Reopen the log files
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def resource_num(self, user, host, num):
         """
         Resource string of a session number
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def restart(self):
         """
         Restart ejabberd
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def restore(self, file):
     # Restore the database from backup file
@@ -560,7 +560,7 @@ class EjabberdBaseAPI(ABC):
         """
         Send a message to a local or remote bare of full JID
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def send_stanza(self, from, to, stanza):
     # Send a stanza; provide From JID and valid To JID
@@ -569,14 +569,14 @@ class EjabberdBaseAPI(ABC):
         """
         Send a stanza as if sent from a c2s session
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_last(self, user, host, timestamp, status):
         """
         Set last activity information
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_loglevel(self, loglevel):
@@ -592,28 +592,28 @@ class EjabberdBaseAPI(ABC):
         {logger,atom}
 
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_master(self, nodename):
         """
         Set master node of the clustered Mnesia tables
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_nickname(self, user, host, nickname):
         """
         Set nickname in a user's vCard
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_presence(self, user, host, resource, type, show, status, priority):
         """
         Set presence of a session
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def set_room_affiliation(self, name, service, jid, affiliation):
     # Change an affiliation in a MUC room
@@ -623,70 +623,70 @@ class EjabberdBaseAPI(ABC):
         """
         Set content in a vCard field
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_vcard2(self, user, host, name, subname, content):
         """
         Set content in a vCard subfield
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def set_vcard2_multi(self, user, host, name, subname, contents):
         """
         *Set multiple contents in a vCard subfield
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_create(self, group, host, name, description, display):
         """
         Create a Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_delete(self, group, host):
         """
         Delete a Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_get_info(self, group, host):
         """
         Get info of a Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_get_members(self, group, host):
         """
         Get members of a Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_list(self, host):
         """
         List the Shared Roster Groups in Host
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_user_add(self, user, host, group, grouphost):
         """
         Add the JID user@host to the Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def srg_user_del(self, user, host, group, grouphost):
         """
         Delete this JID user@host from the Shared Roster Group
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def stats(self, name):
@@ -699,7 +699,7 @@ class EjabberdBaseAPI(ABC):
         * ``uptimeseconds``
         * ``processes`` - Introduced sometime after Ejabberd 15.07
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def stats_host(self, name, host):
@@ -709,56 +709,56 @@ class EjabberdBaseAPI(ABC):
         * ``registeredusers``
         * ``onlineusers``
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def status(self):
         """
         Get ejabberd status
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def status_list(self, status):
         """
         List of logged users with this status
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def status_list_host(self, host, status):
         """
         List of users logged in host with their statuses
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def status_num(self, status):
         """
         Number of logged users with this status
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def status_num_host(self, host, status):
         """
         Number of logged users with this status in host
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def stop(self):
         """
         Stop ejabberd
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def stop_kindly(self, delay, announcement):
         """
         Inform users and rooms, wait, and stop the server
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def subscribe_room(self, user, nick, room, nodes):
     # Subscribe to a MUC conference
@@ -771,14 +771,14 @@ class EjabberdBaseAPI(ABC):
         """
         Update the given module, or use the keyword: all
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def update_list(self):
         """
         List modified modules that can be updated
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def user_resources(self, user, server):
@@ -799,4 +799,4 @@ class EjabberdBaseAPI(ABC):
         {resources,{list,{resource,string}}}
 
         """
-        raise NotImplementedError("superclass must implement this method")
+        raise NotImplementedError("subclass must implement this method")
