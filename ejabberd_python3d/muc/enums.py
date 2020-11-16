@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from ..abc.api import Enum
+from ejabberd_python3d.abc.api import Enum
 
 
 class MUCRoomOption(Enum):

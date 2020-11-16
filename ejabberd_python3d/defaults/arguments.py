@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
 from ..abc.api import APIArgument
-from ..serializers import StringSerializer, IntegerSerializer, PositiveIntegerSerializer, BooleanSerializer
+from ..serializers import StringSerializer, IntegerSerializer, PositiveIntegerSerializer, BooleanSerializer, \
+    LogLevelSerializer
 
 
 class StringArgument(APIArgument):
@@ -18,3 +19,7 @@ class PositiveIntegerArgument(APIArgument):
 
 class BooleanArgument(APIArgument):
     serializer_class = BooleanSerializer
+
+
+class LogLevelArgument(APIArgument):
+    serializer_class = LogLevelSerializer

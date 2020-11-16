@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 from ejabberd_python3d.abc.api import API
 from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
 from ejabberd_python3d.core.utils import format_password_hash_sha
-from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument
+from ejabberd_python3d.defaults import LogLevelOptions, loglevel_options_serializers
+from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument, \
+    LogLevelArgument
 from ejabberd_python3d.muc import muc_room_options_serializers
 from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
 from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption
@@ -634,3 +636,26 @@ class SendStanzaC2S(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class SetLogLevel(API):
+    method = "set_loglevel"
+    arguments = [LogLevelArgument('loglevel')]
+
+    def transform_arguments(self, **kwargs):
+        option = kwargs.pop('loglevel')
+        assert isinstance(option, LogLevelOptions)
+        serializer_class = loglevel_options_serializers.get(option, StringSerializer)
+        kwargs['value'] = serializer_class().to_api(kwargs['value'])
+        return kwargs
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SetMaster(API):
+    method = "set_master"
+    arguments = [StringArgument('nodename')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res")
