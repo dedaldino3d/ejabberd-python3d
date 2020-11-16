@@ -677,3 +677,21 @@ class SetVcard(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class SetVcard2(API):
+    method = "set_vcard2"
+    arguments = [StringArgument("user"), StringArgument("host"), StringArgument("name"), StringArgument("subname"),
+                 StringArgument("content")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SetVcardMulti(API):
+    method = "set_vcard2_multi"
+    arguments = [StringArgument("user"), StringArgument("host"), StringArgument("name"), StringArgument("subname"),
+                 StringArgument("contents")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
