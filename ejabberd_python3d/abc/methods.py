@@ -529,3 +529,27 @@ class KickSession(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class ListCluster(API):
+    method = "list_cluster"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("nodes")
+
+
+class ModulesAvailable(API):
+    method = "modules_available"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("modules")
+
+
+class ModulesInstalled(API):
+    method = "modules_installed"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("modules")
