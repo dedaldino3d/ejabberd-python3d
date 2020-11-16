@@ -1,46 +1,55 @@
 import os
-import time
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MAIN_PACKAGE_DIRECTORY = os.path.join('ejabberd_python3d', ROOT_DIR)
-WRITE_FILE_NAME = "TODOS.md"
+MAIN_PACKAGE_DIRECTORY = os.path.join(ROOT_DIR, 'ejabberd_python3d')
+WRITE_FILE_NAME = os.path.join(ROOT_DIR, "TODOS.md")
+DEBUG = False
 
 
 def create_file():
     f = open(WRITE_FILE_NAME, 'w')
-    # f = open(os.path.join(WRITE_FILE_NAME, ROOT_DIR), 'w')
     return f
 
 
-def report_callee(filename, filewrite):
-    print("==> Writing todos in :{} from :{}".format(filewrite, filename))
+def report_callee(filename, filewrite, line):
+    print("==> Writing Todos in {} from: {}\nTODO ==> {}".format(filewrite, filename, line))
 
 
 skip_dirs = ['build', 'dist', '__pycache__', '.git', '.idea', 'ejabberd_python3d.egg-info']
 
+file2write = create_file()
 
-def extract_todos(dir, debug=False):
+
+def extract_todos(dir):
     if os.path.isdir(dir):
-        file = create_file()
         for root, dirs, files in os.walk((dir if os.path.isabs(dir) else os.path.abspath(dir))):
             for d in skip_dirs:
                 if d in dirs:
                     dirs.remove(d)
-            for f in files:
-                try:
-                    with open(os.path.join(f, root), 'r') as fr:
-                        line = fr.readline()
-                        if line.startswith("# TODO") or line.find("TODO"):
-                            file.writelines(line)
-                            if debug:
-                                report_callee(f, file.name)
-                        time.sleep(1)
-                except PermissionError:
-                    print("PermissionError. file: {:<25} dir: {}".format(f, root))
-            time.sleep(0.5)
+            _extract_todos(files, root)
     else:
         raise ValueError("Enter a valid dir name")
 
 
+def _extract_todos(files, root):
+    if len(files) == 0:
+        return
+    try:
+        file = files.pop()
+        _extract_todos2(file, root)
+        return _extract_todos(files, root)
+    except (IndexError, PermissionError,):
+        pass
+
+
+def _extract_todos2(file, root, ):
+    with open(os.path.join(root, file), 'r') as fr:
+        for line in fr:
+            if "# TODO" in line:
+                file2write.writelines(line)
+                if DEBUG:
+                    report_callee(file, file2write.name, line)
+
+
 if __name__ == '__main__':
-    extract_todos(MAIN_PACKAGE_DIRECTORY, debug=True)
+    extract_todos(MAIN_PACKAGE_DIRECTORY)
