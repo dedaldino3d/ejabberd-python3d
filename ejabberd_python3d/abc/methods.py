@@ -659,3 +659,21 @@ class SetMaster(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res")
+
+
+class SetPresence(API):
+    method = "set_presence"
+    # TODO: some arguments is not required
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('resource'), StringArgument('type'),
+                 StringArgument('show'), StringArgument('status'), StringArgument('priority')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class SetVcard(API):
+    method = "set_vcard"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('name'), StringArgument('content')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
