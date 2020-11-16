@@ -810,3 +810,19 @@ class StatusNumHost(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("users")
+
+
+class Stop(API):
+    method = "stop"
+    arguments = []
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
+
+
+class StopKindly(API):
+    method = "stop_kindly"
+    arguments = [PositiveIntegerArgument("delay"), StringArgument("announcement")]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
