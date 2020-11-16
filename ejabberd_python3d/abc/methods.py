@@ -752,3 +752,21 @@ class SrgUserDel(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class Stats(API):
+    method = "stats"
+    # TODO: name is between: registeredusers onlineusers onlineusersnode uptimeseconds processes
+    arguments = [StringArgument('name')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("stat")
+
+
+class StatsHost(API):
+    method = "stats_host"
+    # TODO: name is between: registeredusers onlineusers
+    arguments = [StringArgument('name'), StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("stat")
