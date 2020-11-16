@@ -61,9 +61,9 @@ class CheckPasswordHash(API):
                  StringArgument('hashmethod')]
 
     def transform_arguments(self, **kwargs):
-        passwordhash = format_password_hash_sha(password=kwargs.pop('password'))
+        password_hash = format_password_hash_sha(password=kwargs.pop('password'))
         kwargs.update({
-            'passwordhash': passwordhash,
+            'passwordhash': password_hash,
             'hashmethod': 'sha'
         })
         return kwargs
@@ -430,6 +430,22 @@ class SubscribeRoom(API):
 class UnSubscribeRoom(API):
     method = "unsubscribe_room"
     arguments = [StringArgument('user'), StringArgument('room')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class CheckPassword(API):
+    method = "check_password"
+    arguments = [StringArgument('user'), StringArgument('host'), StringArgument('password')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
+
+
+class DeleteExpiredMessages(API):
+    method = "check_password"
+    arguments = []
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
