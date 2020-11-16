@@ -569,3 +569,20 @@ class OutgoingS2SNumber(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('s2s_outgoing')
+
+
+class ProcessRosterItems(API):
+    method = "process_rosteritems"
+    arguments = [StringArgument('action'), StringArgument('subs'), StringArgument('asks'), StringArgument('users'),
+                 StringArgument('contacts')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("response")
+
+
+class PushAllToAll(API):
+    method = "push_alltoall"
+    arguments = [StringArgument('host'), StringArgument('group')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0
