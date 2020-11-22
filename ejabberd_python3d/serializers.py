@@ -1,8 +1,8 @@
-from abc import ABCMeta, abstractmethod
-from six import string_types
+from abc import abstractmethod
 
 from ejabberd_python3d.abc.api import Enum, APIArgumentSerializer
 from ejabberd_python3d.defaults.enums import LogLevelOptions
+from six import string_types
 
 
 class StringSerializer(APIArgumentSerializer):
@@ -74,6 +74,24 @@ class EnumSerializer(StringSerializer):
         res = self.enum_class.get_by_name(value)
         if res is None:
             raise ValueError("Expects enum value for {}, but got {}".format(self.enum_class, type(value)))
+
+
+class ListSerializer(APIArgumentSerializer):
+    def to_api(self, value):
+        if not isinstance(value, list):
+            raise ValueError("Expects list, but got {}".format(type(value)))
+        vl = ""
+        for v in range(len(value)):
+            if v == 0:
+                vl += value[v]
+            else:
+                vl += "," + value[v]
+        return vl
+
+    def to_builtin(self, value):
+        if not isinstance(value, list):
+            raise ValueError("Expects list, but got {}".format(type(value)))
+        return value
 
 
 class LogLevelSerializer(EnumSerializer):

@@ -506,7 +506,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.GetUserRooms, user=user, host=host)
 
-
     def get_vcard(self, user, host, name):
         """
         Get content from a vCard field
@@ -952,15 +951,31 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         return self._call_api(methods.StopKindly,
                               delay=delay, announcement=announcement)
 
-    # TODO def subscribe_room(self, user, nick, room, nodes):
-    # Subscribe to a MUC conference
+    def subscribe_room(self, user, nick, room, nodes=None):
+        """
+        Subscribe to a MUC conference
+        :param user:
+        :param nick:
+        :param room:
+        :param nodes:
+        :return:
+        """
+        return self._call_api(methods.SubscribeRoom, user=user, nick=nick, room=room, nodes=nodes)
 
-    # TODO def unsubscribe_room(self, user, room):
-    # Unsubscribe from a MUC conference
+    def unsubscribe_room(self, user, room):
+        """
+        Unsubscribe from a MUC conference
+        :param user:
+        :param room:
+        :return:
+        """
+        return self._call_api(methods.UnSubscribeRoom, user=user, room=room)
 
     def update(self, module):
         """
         Update the given module, or use the keyword: all
+
+        :param module:
         """
         return self._call_api(methods.Update, module=module)
 

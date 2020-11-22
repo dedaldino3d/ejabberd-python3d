@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from ..abc.api import APIArgument
-from .serializers import MUCRoomOptionSerializer, AffiliationSerializer
+from .serializers import MUCRoomOptionSerializer, AffiliationSerializer, MUCNodesSerializer
 
 
 class MUCRoomArgument(APIArgument):
@@ -11,3 +11,7 @@ class MUCRoomArgument(APIArgument):
 
 class AffiliationArgument(APIArgument):
     serializer_class = AffiliationSerializer
+
+
+class MUCNodesArgument(APIArgument):
+    serializer_class = MUCNodesSerializer

@@ -5,10 +5,11 @@ from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
 from ejabberd_python3d.core.utils import format_password_hash_sha
 from ejabberd_python3d.defaults import LogLevelOptions, loglevel_options_serializers
 from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument, \
-    LogLevelArgument
-from ejabberd_python3d.muc import muc_room_options_serializers
-from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
-from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption
+    LogLevelArgument, ListArgument
+from ejabberd_python3d.muc import muc_room_options_serializers, mucsub_room_nodes
+from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument, MUCNodesArgument
+from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption, MUCNodes
+from ejabberd_python3d.muc.serializers import MUCNodesSerializer
 from ejabberd_python3d.serializers import StringSerializer
 
 
@@ -301,7 +302,10 @@ class ConvertToSCRAM(API):
 class CreateRoomWithOPTS(API):
     method = "create_room_with_opts"
     # TODO: add argument options: [{name::string,value::string}]: List of options
-    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host')]
+    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host'), MUCRoomOption()]
+
+    def transform_arguments(self, **kwargs):
+        pass
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
@@ -422,9 +426,22 @@ class SetLast(API):
 
 class SubscribeRoom(API):
     method = "subscribe_room"
-    # TODO: nodes must be separated by commas, so therefore you can use an array and before send transform arguments
     arguments = [StringArgument('user'), StringArgument('nick'), StringArgument('room'),
-                 StringArgument('nodes')]
+                 ListArgument('nodes', required=False)]
+
+    def transform_arguments(self, **kwargs):
+        nodes = kwargs.pop("nodes")
+        if nodes is None or not isinstance(nodes, list):
+            nodes = [MUCNodes.mucsub_system, MUCNodes.mucsub_subscribers, MUCNodes.mucsub_subject,
+                     MUCNodes.mucsub_config, MUCNodes.mucsub_presence, MUCNodes.mucsub_messages,
+                     MUCNodes.mucsub_affiliations]
+        nd = []
+        for v in nodes:
+            serializer_class = MUCNodesSerializer
+            t = serializer_class().to_api(v)
+            nd.append(t)
+        kwargs['nodes'] = nd
+        return kwargs
 
     def transform_response(self, api, arguments, response):
         return response.get('nodes')

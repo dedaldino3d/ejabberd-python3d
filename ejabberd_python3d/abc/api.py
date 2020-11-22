@@ -206,9 +206,6 @@ class EjabberdBaseAPI(ABC):
     # TODO def convert_to_yaml(self, in, out):
     # Convert the input file from Erlang to YAML format
 
-    # TODO def create_room(self, name, service, host):
-    # Create a MUC room name@service in host
-
     # TODO def create_room_with_opts(self, name, service, host, options):
     # Create a MUC room name@service in host with given options
 
@@ -774,11 +771,25 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def subscribe_room(self, user, nick, room, nodes):
-    # Subscribe to a MUC conference
+    def subscribe_room(self, user, nick, room, nodes):
+        """
+        Subscribe to a MUC conference
+        :param user:
+        :param nick:
+        :param room:
+        :param nodes:
+        :return:
+        """
+        raise NotImplementedError("subclass must implement this method")
 
-    # TODO def unsubscribe_room(self, user, room):
-    # Unsubscribe from a MUC conference
+    def unsubscribe_room(self, user, room):
+        """
+        Unsubscribe from a MUC conference
+        :param user:
+        :param room:
+        :return:
+        """
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def update(self, module):

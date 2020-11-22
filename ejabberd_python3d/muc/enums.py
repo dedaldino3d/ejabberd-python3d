@@ -38,3 +38,13 @@ class Affiliation(Enum):
     member = 3
     admin = 4
     owner = 5
+
+
+class MUCNodes(Enum):
+    mucsub_presence = "urn:xmpp:mucsub:nodes:presence"
+    mucsub_messages = "urn:xmpp:mucsub:nodes:messages"
+    mucsub_affiliations = "urn:xmpp:mucsub:nodes:affiliations"
+    mucsub_subscribers = "urn:xmpp:mucsub:nodes:subscribers"
+    mucsub_config = "urn:xmpp:mucsub:nodes:config"
+    mucsub_subject = "urn:xmpp:mucsub:nodes:subject"
+    mucsub_system = "urn:xmpp:mucsub:nodes:system"
