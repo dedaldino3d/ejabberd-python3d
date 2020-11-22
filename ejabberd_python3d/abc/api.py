@@ -343,8 +343,16 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO get_subscribers(self, name, service):
-    # List subscribers of a MUC conference
+    @abstractmethod
+    def get_subscribers(self, name, service):
+        """
+        List subscribers of a MUC conference
+        :param name:
+        :param service:
+        :return:
+        """
+        raise NotImplementedError("subclass must implement this method")
+
 
     # TODO get_user_rooms(self, user, host):
     # Get the list of rooms where this user is occupant

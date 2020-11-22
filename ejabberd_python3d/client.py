@@ -485,8 +485,17 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
         return self._call_api(methods.GetRoster, user=user, server=server)
 
-    # TODO get_subscribers(self, name, service):
-    # List subscribers of a MUC conference
+    def get_subscribers(self, name, service):
+        """
+         List subscribers of a MUC conference
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC service
+        :type service: str
+        :return:
+        """
+        return self._call_api(methods.GetSubscribers, name=name, service=service)
 
     # TODO get_user_rooms(self, user, host):
     # Get the list of rooms where this user is occupant

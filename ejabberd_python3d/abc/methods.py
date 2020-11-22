@@ -347,7 +347,7 @@ class GetRoomOccupantsNumber(API):
         return response.get('occupants')
 
 
-class GetSubscrivers(API):
+class GetSubscribers(API):
     method = 'get_subscribers'
     arguments = [StringArgument('name'), StringArgument('service')]
 
