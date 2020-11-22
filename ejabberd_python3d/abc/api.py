@@ -206,8 +206,17 @@ class EjabberdBaseAPI(ABC):
     # TODO def convert_to_yaml(self, in, out):
     # Convert the input file from Erlang to YAML format
 
-    # TODO def create_room_with_opts(self, name, service, host, options):
-    # Create a MUC room name@service in host with given options
+    @abstractmethod
+    def create_room_with_opts(self, name, service, host, options):
+        """
+        Create a MUC room name@service in host with given options
+        :param name:
+        :param service:
+        :param host:
+        :param options:
+        :return:
+        """
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def create_rooms_file(self, file):
     # Create the rooms indicated in file

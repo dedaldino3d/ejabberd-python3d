@@ -5,12 +5,13 @@ from ejabberd_python3d.core.errors import UserAlreadyRegisteredError
 from ejabberd_python3d.core.utils import format_password_hash_sha
 from ejabberd_python3d.defaults import LogLevelOptions, loglevel_options_serializers
 from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument, \
-    LogLevelArgument, ListArgument
+    LogLevelArgument, ListArgument, GenericArgument
 from ejabberd_python3d.muc import muc_room_options_serializers, mucsub_room_nodes
 from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument, MUCNodesArgument
 from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption, MUCNodes
 from ejabberd_python3d.muc.serializers import MUCNodesSerializer
-from ejabberd_python3d.serializers import StringSerializer
+from ejabberd_python3d.serializers import StringSerializer, BooleanSerializer
+from six import string_types
 
 
 class Echo(API):
@@ -160,7 +161,6 @@ class ChangeRoomOption(API):
 
     def transform_arguments(self, **kwargs):
         option = kwargs.get('option')
-        assert isinstance(option, MUCRoomOption)
         serializer_class = muc_room_options_serializers.get(option, StringSerializer)
         kwargs['value'] = serializer_class().to_api(kwargs['value'])
         return kwargs
@@ -299,13 +299,23 @@ class ConvertToSCRAM(API):
         return response.get('res') == 0
 
 
-class CreateRoomWithOPTS(API):
+class CreateRoomWithOpts(API):
     method = "create_room_with_opts"
-    # TODO: add argument options: [{name::string,value::string}]: List of options
-    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host'), MUCRoomOption()]
+    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host'), GenericArgument('options')]
 
     def transform_arguments(self, **kwargs):
-        pass
+        options = kwargs.pop('options')
+        op = []
+        for opt in options:
+            serializer_class = muc_room_options_serializers.get(opt['name'], StringSerializer)
+            if not isinstance(opt['name'], string_types):
+                opt['name'] = serializer_class().to_api(opt['name'])
+            opt['value'] = serializer_class().to_api(opt['value'])
+            op.append(opt)
+        kwargs.update({
+            'options': op
+        })
+        return kwargs
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0

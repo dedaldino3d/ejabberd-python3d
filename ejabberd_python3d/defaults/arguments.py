@@ -2,7 +2,11 @@ from __future__ import unicode_literals
 
 from ..abc.api import APIArgument
 from ..serializers import StringSerializer, IntegerSerializer, PositiveIntegerSerializer, BooleanSerializer, \
-    LogLevelSerializer, ListSerializer
+    LogLevelSerializer, ListSerializer, GenericSerializer
+
+
+class GenericArgument(APIArgument):
+    serializer_class = GenericSerializer
 
 
 class StringArgument(APIArgument):

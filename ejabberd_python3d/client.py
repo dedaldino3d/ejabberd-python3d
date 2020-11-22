@@ -172,6 +172,7 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         self._report_method_call(api.method, args)
 
         # perform call
+        print("auth args: %s, args: %s" % (self.auth, args))
         try:
             if not api.authenticate:
                 response = method(args)
@@ -329,11 +330,18 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     # TODO def convert_to_yaml(self, in, out):
     # Convert the input file from Erlang to YAML format
 
-    # TODO def create_room(self, name, service, host):
-    # Create a MUC room name@service in host
+    def create_room_with_opts(self, name, service, host, options):
+        """
+        Create a MUC room name@service in host with given options
+        :param name:
+        :param service:
+        :param host:
+        :param options: Room options. Example: options = [{"name": "members_only","value": "False"},
+                                                        {"name": "moderated","value": "False"}]
+        :return:
 
-    # TODO def create_room_with_opts(self, name, service, host, options):
-    # Create a MUC room name@service in host with given options
+        """
+        return self._call_api(methods.CreateRoomWithOpts, name=name, service=service, host=host, options=options)
 
     # TODO def create_rooms_file(self, file):
     # Create the rooms indicated in file

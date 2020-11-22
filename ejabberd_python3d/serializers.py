@@ -5,6 +5,14 @@ from ejabberd_python3d.defaults.enums import LogLevelOptions
 from six import string_types
 
 
+class GenericSerializer(APIArgumentSerializer):
+    def to_api(self, value):
+        return value
+
+    def to_builtin(self, value):
+        return value
+
+
 class StringSerializer(APIArgumentSerializer):
     def to_api(self, value):
         if not isinstance(value, string_types):
