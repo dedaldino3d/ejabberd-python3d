@@ -156,8 +156,8 @@ class EjabberdBaseAPI(ABC):
 
     @abstractmethod
     def add_rosteritem(self,
-                       localuser, localserver,
-                       user, server,
+                       localuser, localhost,
+                       user, host,
                        nick, group, subs):
         """
         Add an item to a user's roster (self,supports ODBC):

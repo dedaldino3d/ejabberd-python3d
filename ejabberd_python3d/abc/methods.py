@@ -201,9 +201,10 @@ class GetRoomAffiliations(API):
 
 class AddRosterItem(API):
     method = 'add_rosteritem'
-    arguments = [StringArgument('localuser'), StringArgument('localserver'),
-                 StringArgument('user'), StringArgument('server'),
-                 StringArgument('nick'), StringArgument('group'), StringArgument('subs')]
+    arguments = [StringArgument('localuser'), StringArgument('localhost'),
+                 StringArgument('user'), StringArgument('host'),
+                 StringArgument('nick', required=False), StringArgument('group', required=False),
+                 StringArgument('subs', required=False)]
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0

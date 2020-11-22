@@ -255,16 +255,16 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         return self._call_api(methods.CheckPasswordHash, user=user, host=host, password=password)
 
     def add_rosteritem(self,
-                       localuser, localserver,
-                       user, server,
-                       nick, group, subs):
+                       localuser, localhost,
+                       user, host,
+                       nick="", group="", subs="to"):
         """
         Add an item to a user's roster (self,supports ODBC):
         """
         return self._call_api(methods.AddRosterItem, localuser=localuser,
-                              localserver=localserver,
+                              localhost=localhost,
                               user=user,
-                              server=server,
+                              host=host,
                               nick=nick,
                               group=group,
                               subs=subs)
