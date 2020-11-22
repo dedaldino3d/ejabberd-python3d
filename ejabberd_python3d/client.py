@@ -497,8 +497,15 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.GetSubscribers, name=name, service=service)
 
-    # TODO get_user_rooms(self, user, host):
-    # Get the list of rooms where this user is occupant
+    def get_user_rooms(self, user, host):
+        """
+        Get the list of rooms where this user is occupant
+        :param user:
+        :param host:
+        :return:
+        """
+        return self._call_api(methods.GetUserRooms, user=user, host=host)
+
 
     def get_vcard(self, user, host, name):
         """

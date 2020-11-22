@@ -353,9 +353,15 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
+    def get_user_rooms(self, user, host):
+        """
+        Get the list of rooms where this user is occupant
+        :param user:
+        :param host:
+        :return:
+        """
+        raise NotImplementedError("subclass must implement this method")
 
-    # TODO get_user_rooms(self, user, host):
-    # Get the list of rooms where this user is occupant
     @abstractmethod
     def get_vcard(self, user, host, name):
         """
