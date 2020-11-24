@@ -4,7 +4,7 @@ from os.path import basename, splitext
 import setuptools
 from pip._internal.req import parse_requirements
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
