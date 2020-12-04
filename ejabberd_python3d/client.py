@@ -11,6 +11,7 @@ from ejabberd_python3d.defaults.constants import XMLRPC_API_PROTOCOL, XMLRPC_API
     XMLRPC_API_PORT
 
 
+# noinspection PyTypeChecker
 class EjabberdAPIClient(EjabberdBaseAPI):
     """
     Python client for Ejabberd XML-RPC Administration API.
@@ -75,7 +76,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def service_url(self):
         """
         Returns the FQDN to the Ejabberd server's XML-RPC endpoint
-        :return:
         """
         # TODO: add endpoint parameter
         return "{}://{}:{}".format(self.protocol, self.host, self.port)
@@ -105,10 +105,11 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         Internal method to validate and serialize arguments
         :param api_class: An instance of an API class
+        :type api_class: API
         :param arguments: A dictionary of arguments that will be passed to the method
         :type arguments: dict
-        :rtype: dict
         :return: The serialized arguments
+        :rtype: dict
         """
         ser_args = {}
 
@@ -129,11 +130,11 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def _report_method_call(self, method, arguments):
         """
         Internal method to print info about a method call
-        :param method: The name oft hem method to call
+
+        :param method: The name of the method to call
         :type method: str|unicode
         :param arguments: A dictionary of arguments that will be passed to the method
         :type: arguments: dict
-        :return:
         """
         if self.verbose:
             print("===> %s(%s)" % (method, ', '.join(['%s=%s' % (k, v) for k, v in arguments.items()])))
@@ -141,12 +142,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def _call_api(self, api_class, **kwargs):
         """
         Internal method used to perform api calls
+
         :param api_class:
-        :type api_class: py:class:API
+        :type api_class: API
         :param kwargs:
         :type kwargs: dict
         :rtype: object
-        :return: Returns return value of the XMLRPC Method call
+        :return: Return value of the XMLRPC Method call
         """
 
         # validate api_class
@@ -193,17 +195,19 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def registered_users(self, host):
         """
-        List all registered users in the xmpp_host
+        List all registered users in the host
+
         :param host: The XMPP_DOMAIN
         :type host: str|unicode
         :rtype: Iterable
-        :return: A list of registered users in the xmpp_host
+        :return: A List of registered accounts usernames
         """
         return self._call_api(methods.RegisteredUsers, host=host)
 
     def register(self, user, host, password):
         """
-        Registers a user to the ejabberd server
+        Register a user to the ejabberd server
+
         :param user: The username for the new user
         :type user: str|unicode
         :param host: The XMPP_DOMAIN
@@ -217,19 +221,21 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def unregister(self, user, host):
         """
-        UnRegisters a user from the ejabberd server
+        Unregister a user from the ejabberd server
+
         :param user: The username for the new user
         :type user: str|unicode
         :param host: The XMPP_DOMAIN
         :type host: str|unicode
         :rtype: bool
-        :return: A boolean indicating if user unregistered has succeeded
+        :return: A boolean indicating if user unregistered
         """
         return self._call_api(methods.Unregister, user=user, host=host)
 
     def change_password(self, user, host, newpass):
         """
         Change the password for a given user
+
         :param user: The username for the user we want to change the password for
         :type user: str|unicode
         :param host: The XMPP_DOMAIN
@@ -244,14 +250,15 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def check_password_hash(self, user, host, password):
         """
         Checks whether a password is correct for a given user. The used hash-method is fixed to sha1.
+
         :param user: The username for the user we want to check the password for
         :type user: str|unicode
         :param host: The XMPP_DOMAIN
         :type host: str|unicode
         :param password: The password we want to check for the user
         :type password: str|unicode
-        :rtype: bool
         :return: A boolean indicating if the given password matches the user's password
+        :rtype: bool
         """
         return self._call_api(methods.CheckPasswordHash, user=user, host=host, password=password)
 
@@ -260,7 +267,25 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                        user, host,
                        nick="", group="", subs="to"):
         """
-        Add an item to a user's roster (self,supports ODBC):
+        Add an item to a user's roster
+        Group can be several groups separated by ; for example: "g1;g2;g3"
+
+        :param localuser: User name
+        :type localuser: str
+        :param localhost:Server name
+        :type localhost: str
+        :param user: Contact user name
+        :type user: str
+        :param host: Contact server name
+        :type host: str
+        :param nick: Nickname, default: ""
+        :type nick: str
+        :param group: Subscription, default: ""
+        :type group: str
+        :param subs: Subscription, default: ""
+        :type subs: str
+        :return: Status code
+        :rtype: bool
         """
         return self._call_api(methods.AddRosterItem, localuser=localuser,
                               localhost=localhost,
@@ -275,6 +300,15 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def ban_account(self, user, host, reason):
         """
         Ban an account: kick sessions and set random password
+
+        :param user: User name to ban
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param reason: Reason for banning user
+        :type reason: str
+        :return: Status code
+        :rtype: True on success, False otherwise)
         """
         return self._call_api(methods.BanAccount, user=user,
                               host=host,
@@ -286,12 +320,28 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def check_account(self, user, host):
         """
         Check if an account exists or not
+
+        :param user: User name to check
+        :type user: str
+        :param host: Server to check
+        :type host: str
+        :return: Status code
+        :rtype: True on success, False otherwise)
         """
         return self._call_api(methods.CheckAccount, user=user, host=host)
 
     def check_password(self, user, host, password):
         """
         Check if a password is correct
+
+        :param user: User name to check
+        :type user: str
+        :param host: Server to check
+        :type host: str
+        :param password: Password to check
+        :type password: str
+        :return: Status code
+        :rtype: True on success, False otherwise)
         """
         return self._call_api(methods.CheckPassword, user=user,
                               host=host,
@@ -303,24 +353,37 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def connected_users(self):
         """
         List all established sessions
+
+        :return: List of users sessions
+        :rtype: list
         """
         return self._call_api(methods.ConnectedUsers)
 
     def connected_users_info(self):
         """
         List all established sessions and their information
+
+        :return: A dict with established connections
+        :rtype: list
         """
         return self._call_api(methods.ConnectedUsersInfo)
 
     def connected_users_number(self):
         """
         Get the number of established sessions
+
+        :return: Number of established sessions
+        :rtype: int
         """
         return self._call_api(methods.ConnectedUsersNumber)
 
     def connected_users_vhost(self, host):
         """
         Get the list of established sessions in a vhost
+
+        :param host: Server name
+        :return: List of established sessions
+        :rtype: list
         """
         return self._call_api(methods.ConnectedUsersVhost, host=host)
 
@@ -333,13 +396,17 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def create_room_with_opts(self, name, service, host, options):
         """
         Create a MUC room name@service in host with given options
-        :param name:
-        :param service:
-        :param host:
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC service
+        :type service: str
+        :param host: Server host
+        :type host: str
         :param options: Room options. Example: options = [{"name": "members_only","value": "False"},
                                                         {"name": "moderated","value": "False"}]
-        :return:
-
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.CreateRoomWithOpts, name=name, service=service, host=host, options=options)
 
@@ -349,6 +416,9 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def delete_expired_messages(self):
         """
         Delete expired offline messages from database
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.DeleteExpiredMessages)
 
@@ -361,31 +431,62 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def delete_old_messages(self, days):
         """
         Delete offline messages older than DAYS
+
+        :param days: Last login age in days of accounts that should be removed
+        :type days: int
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.DeleteOldMessages, days=days)
 
     def delete_old_users(self, days):
         """
         Delete users that didn't log in last days, or that never logged
+
+        To protect admin accounts, configure this in your ejabberd.yml
+         example: access_rules: protect_old_users: - allow: admin - deny: all
+        :param days: Last login age in days of accounts that should be removed
+        :type days: int
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.DeleteOldUsers, days=days)
 
     def delete_old_users_vhost(self, host, days):
         """
-        Delete users that didn't log in last days in vhost,
-        or that never logged
+        Delete users that didn't log in last days in vhost, or that never logged
+
+        To protect admin accounts, configure this in your ejabberd.yml
+        for example: access_rules: delete_old_users: - deny: admin - allow: all
+        :param host:
+        :type host: str
+        :param days: Last login age in days of accounts that should be removed
+        :type days: int
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.DeleteOldUsersVhost,
                               host=host, days=days)
 
-    def delete_rosteritem(self, localuser, localserver, user, server):
+    def delete_rosteritem(self, localuser, localhost, user, host):
         """
-        Delete an item from a user's roster (self,supports ODBC):
+         Delete an item from a user's roster (supports ODBC)
+
+        :param localuser: User name
+        :type localuser: str
+        :param localhost: Server name
+        :type localhost: str
+        :param user: Contact user name
+        :type user: str
+        :param host: Contact server name
+        :type host: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.DeleteRosterItem, localuser=localuser,
-                              localserver=localserver,
+                              localserver=localhost,
                               user=user,
-                              server=server)
+                              server=host)
 
     # TODO def destroy_room(self, name, service):
     # Destroy a MUC room
@@ -414,42 +515,126 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     # TODO def gen_markdown_doc_for_commands(self, file, regexp, examples):
     # Generates markdown documentation for ejabberd_commands
 
-    def muc_online_rooms(self, host=None):
-        return self._call_api(methods.MucOnlineRooms, host=host)
+    def muc_online_rooms(self, service="global"):
+        """
+        List existing rooms ('global' to get all vhosts)
+
+        :param service: MUC service, default: 'global' for all
+        :type service: str
+        :return: List of rooms
+        :rtype: list
+        """
+        return self._call_api(methods.MucOnlineRooms, service=service)
 
     def create_room(self, name, service, host):
+        """
+        Create a MUC room name@service in host
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC service
+        :type service: str
+        :param host: Server host
+        :type host: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
+        """
         return self._call_api(methods.CreateRoom, name=name, service=service, host=host)
 
-    def destroy_room(self, name, service, host):
-        return self._call_api(methods.DestroyRoom, name=name, service=service, host=host)
+    def destroy_room(self, name, service):
+        """
+        Destroy a MUC room
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC service
+        :type service: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
+        """
+        return self._call_api(methods.DestroyRoom, name=name, service=service)
 
     def get_room_options(self, name, service):
+        """
+        Get options from a MUC room
+
+        :param name: Room name
+        :param service: MUC Service
+        :return: List of room options dict with name and value
+        :rtype: list
+        """
         return self._call_api(methods.GetRoomOptions, name=name, service=service)
 
     def change_room_option(self, name, service, option, value):
+        """
+        Change an option in a MUC room
+
+        :param name: Room name
+        :param service: MUC Service
+        :param option: Option name
+        :param value: Value to assign
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
+        """
         return self._call_api(methods.ChangeRoomOption, name=name, service=service, option=option, value=value)
 
     def set_room_affiliation(self, name, service, jid, affiliation):
+        """
+        Change an affiliation in a MUC room
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC Service
+        :type service: str
+        :param jid: User JID
+        :type jid: str
+        :param affiliation: Affiliation to set
+        :type affiliation: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
+        """
         return self._call_api(methods.GetRoomAffiliation, name=name, service=service, jid=jid, affiliation=affiliation)
 
     def get_room_affiliations(self, name, service):
+        """
+        Get the list of affiliations of a MUC room
+
+        :param name: Room name
+        :type name: str
+        :param service: MUC Service
+        :type service: str
+        :return: The list of affiliations with username, domain, affiliation and reason
+        :rtype: list
+        """
         return self._call_api(methods.GetRoomAffiliations, name=name, service=service)
 
     def get_cookie(self):
         """
         Get the Erlang cookie of this node
+
+        :return: Erlang cookie used for authentication by ejabberd
+        :rtype: str
         """
         return self._call_api(methods.GetCookie)
 
     def get_last(self, user, host):
         """
-        Get last activity information (self,timestamp and status):
+        Get last activity information
+
+        Timestamp is UTC and XEP-0082 format, for example: 2017-02-23T22:25:28.063062Z ONLINE
+        :param user: User name
+        :param host: Server name
+        :return: Last activity timestamp and status
+        :rtype: dict
         """
         return self._call_api(methods.GetLast, user=user, host=host)
 
     def get_loglevel(self):
         """
         Get the current loglevel
+
+        :return: Tuple with the log level number, its keyword and description
+        :rtype: str
         """
         return self._call_api(methods.GetLogLevel)
 
@@ -470,53 +655,59 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def get_roster(self, user, server):
         """
-        Get roster of a local user.
+        Get roster of a local user
 
-        Note, parameters changed in 15.09
-        from ``user, host``
-        to ``user, server``.
-
-        Arguments:
-
-        user :: binary
-        server :: binary
-
-        Result:
-
-        {contacts,{list,{contact,{tuple,[{jid,string},
-                                         {nick,string},
-                                         {subscription,string},
-                                         {ask,string},
-                                         {group,string}]}}}}
-
+        :param user: User name
+        :param server: Server name
+        :return: List of subscriptions
+        :rtype: list
         """
-
         return self._call_api(methods.GetRoster, user=user, server=server)
 
     def get_subscribers(self, name, service):
         """
-         List subscribers of a MUC conference
+        List subscribers of a MUC conference
 
         :param name: Room name
         :type name: str
         :param service: MUC service
         :type service: str
-        :return:
+        :return: The list of users that are subscribed to that room
+        :rtype: list
         """
         return self._call_api(methods.GetSubscribers, name=name, service=service)
 
     def get_user_rooms(self, user, host):
         """
         Get the list of rooms where this user is occupant
-        :param user:
-        :param host:
-        :return:
+
+        :param user: Username
+        :param host: Server host
+        :return: List of user rooms
+        :rtype: list
         """
         return self._call_api(methods.GetUserRooms, user=user, host=host)
 
     def get_vcard(self, user, host, name):
         """
         Get content from a vCard field
+
+        Some vcard field names in get/set_vcard are:
+        FN - Full Name
+        NICKNAME - Nickname
+        BDAY - Birthday
+        TITLE - Work: Position
+        ROLE - Work: Role
+        For a full list of vCard fields check XEP-0054: vcard-temp at http://www.xmpp.org/extensions/xep-0054.html
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param name: Field name
+        :type name: str
+        :return: Field content
+        :rtype: str
         """
         return self._call_api(methods.GetVcard, user=user,
                               host=host,
@@ -524,7 +715,33 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def get_vcard2(self, user, host, name, subname):
         """
-        Get content from a vCard field
+        Get content from a vCard subfield
+
+        Some vcard field names and subnames in get/set_vcard2 are:
+        N FAMILY - Family name
+        N GIVEN - Given name
+        N MIDDLE - Middle name
+        ADR CTRY - Address: Country
+        ADR LOCALITY - Address: City
+        TEL HOME - Telephone: Home
+        TEL CELL - Telephone: Cellphone
+        TEL WORK - Telephone: Work
+        TEL VOICE - Telephone: Voice
+        EMAIL USERID - E-Mail Address
+        ORG ORGNAME - Work: Company
+        ORG ORGUNIT - Work: Department
+        For a full list of vCard fields check XEP-0054: vcard-temp at http://www.xmpp.org/extensions/xep-0054.html
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param name: Field name
+        :type name: str
+        :param subname: Subfield name
+        :type subname: str
+        :return: Field content
+        :rtype: str
         """
         return self._call_api(methods.GetVcard2, user=user,
                               host=host,
@@ -534,6 +751,32 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def get_vcard2_multi(self, user, host, name, subname):
         """
         Get multiple contents from a vCard field
+
+        Some vcard field names and subnames in get/set_vcard2 are:
+        N FAMILY - Family name
+        N GIVEN - Given name
+        N MIDDLE - Middle name
+        ADR CTRY - Address: Country
+        ADR LOCALITY - Address: City
+        TEL HOME - Telephone: Home
+        TEL CELL - Telephone: Cellphone
+        TEL WORK - Telephone: Work
+        TEL VOICE - Telephone: Voice
+        EMAIL USERID - E-Mail Address
+        ORG ORGNAME - Work: Company
+        ORG ORGUNIT - Work: Department
+        For a full list of vCard fields check XEP-0054: vcard-temp at http://www.xmpp.org/extensions/xep-0054.html
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param name: Field name
+        :type name: str
+        :param subname: Subfield name
+        :type subname: str
+        :return: Field content
+        :rtype: str
         """
         return self._call_api(methods.GetVcard2Multi, user=user,
                               host=host,
@@ -554,6 +797,9 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def incoming_s2s_number(self):
         """
         Number of incoming s2s connections on the node
+
+        :return: s2s number
+        :rtype: int
         """
         return self._call_api(methods.IncomingS2SNumber)
 
@@ -575,6 +821,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def kick_user(self, user, host):
         """
         Disconnect user's active sessions
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :return: Number of resources that were kicked
+        :rtype: int
         """
         return self._call_api(methods.KickUser, user=user, host=host)
 
@@ -585,16 +838,10 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         List nodes that are part of the cluster handled by Node
 
-        Result:
-
-        {nodes,{list,{node,atom}}}
-
+        :return: List of clusters
+        :rtype: list
         """
-        try:
-            return self._call_api(methods.ListCluster)
-        except xmlrpc_client.Fault as e:
-            msg = 'list_cluster is NOT available in your version of ejabberd'
-            raise Exception('{}\n{}\n - code: {}'.format(msg, e.faultString, e.faultCode))
+        return self._call_api(methods.ListCluster)
 
     # TODO def load(self, file):
     # Restore the database from text file
@@ -616,13 +863,19 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def modules_available(self):
         """
-        List available modules
+        List the contributed modules available to install
+
+        :return: List of dict with module name and description
+        :rtype: list
         """
         return self._call_api(methods.ModulesAvailable)
 
     def modules_installed(self):
         """
-        List installed modules
+        List the contributed modules already installed
+
+        :return: List of dict with module name and description
+        :rtype: list
         """
         return self._call_api(methods.ModulesInstalled)
 
@@ -637,12 +890,22 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def num_resources(self, user, host):
         """
         Get the number of resources of a user
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :return: Number of active resources for a user
+        :rtype: int
         """
         return self._call_api(methods.NumResources, user=user, host=host)
 
     def outgoing_s2s_number(self):
         """
         Number of outgoing s2s connections on the node
+
+        :return: Number of outgoing s2s connections
+        :rtype: int
         """
         return self._call_api(methods.OutgoingS2SNumber)
 
@@ -657,7 +920,19 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def process_rosteritems(self, action, subs, asks, users, contacts):
         """
-        List or delete rosteritems that match filtering options
+        List/delete rosteritems that match filter
+
+        :param action:
+        :type action: str
+        :param subs:
+        :type subs: str
+        :param asks:
+        :type asks: str
+        :param users:
+        :type users: str
+        :param contacts:
+        :type contacts: str
+        :return:
         """
         return self._call_api(methods.ProcessRosterItems, action=action,
                               subs=subs,
@@ -668,6 +943,11 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def push_alltoall(self, host, group):
         """
         Add all the users to all the users of Host in Group
+
+        :param host: Server name
+        :param group: Group name
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.PushAllToAll, host=host, group=group)
 
@@ -680,26 +960,43 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def registered_vhosts(self):
         """
         List all registered vhosts in SERVER
+
+        :return: List of available vhosts
+        :rtype: list
         """
         return self._call_api(methods.RegisteredVhosts)
 
     def reload_config(self):
         """
-        Reload ejabberd configuration file into memory
-
+        Reload config file in memory
         (only affects ACL and Access)
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.ReloadConfig)
 
     def reopen_log(self):
         """
         Reopen the log files
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.ReopenLog)
 
     def resource_num(self, user, host, num):
         """
         Resource string of a session number
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param num: ID of resource to return
+        :type num: int
+        :return: Name of user resource
+        :rtype: str
         """
         return self._call_api(methods.ResourceNum, user=user,
                               host=host,
@@ -707,7 +1004,10 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def restart(self):
         """
-        Restart ejabberd
+        Restart ejabberd gracefully
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.Restart)
 
@@ -734,8 +1034,23 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def send_message(self, type, from_jid, to, body, subject=""):
         """
         Send a message to a local or remote bare of full JID
+
+        When sending a groupchat message to a MUC room, FROM must be the full JID of a room occupant,
+        or the bare JID of a MUC service admin, or the bare JID of a MUC/Sub subscribed user.
+
+        :param type:  Message type: normal, chat, headline, groupchat
+        :type type: str
+        :param from_jid: Sender JID
+        :type from_jid: str
+        :param to: Receiver JID
+        :type to: str
+        :param body: Body
+        :type body: str
+        :param subject: Subject, or empty string
+        :type subject: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
-        # noinspection PyTypeChecker
         return self._call_api(methods.SendMessage, type=type,
                               from_jid=from_jid, to=to,
                               subject=subject,
@@ -747,6 +1062,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def send_stanza_c2s(self, user, host, resource, stanza):
         """
         Send a stanza as if sent from a c2s session
+
+        :param user: Username
+        :param host: Server name
+        :param resource: Resource
+        :param stanza: Stanza
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SendStanzaC2S, user=user,
                               host=host,
@@ -756,6 +1078,14 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def set_last(self, user, host, timestamp, status):
         """
         Set last activity information
+        Timestamp is the seconds since 1970-01-01 00:00:00 UTC, for example: date +%s
+
+        :param user: User name
+        :param host: Server name
+        :param timestamp: Number of seconds since epoch
+        :param status: Status message
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetLast, user=user,
                               host=host,
@@ -764,16 +1094,12 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def set_loglevel(self, loglevel):
         """
-        Set the loglevel (0 to 5)
+        Set the loglevel
 
-        Arguments:
-
-            loglevel :: integer
-
-        Result:
-
-        {logger,atom}
-
+        :param loglevel: Desired logging level: none | emergency | alert | critical | error
+        | warning | notice | info | debug
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         try:
             return self._call_api(methods.SetLogLevel, loglevel=loglevel)
@@ -784,12 +1110,27 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def set_master(self, nodename):
         """
         Set master node of the clustered Mnesia tables
+        If you provide as nodename "self", this node will be set as its own master.
+
+        :param nodename: Name of the erlang node that will be considered master of this node
+        :type nodename: str
+        :return: Raw result string
+        :rtype: bool
         """
         return self._call_api(methods.SetMaster, nodename=nodename)
 
     def set_nickname(self, user, host, nickname):
         """
         Set nickname in a user's vCard
+
+        :param user: Username
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param nickname: Nickname
+        :type nickname: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetNickname, user=user,
                               host=host,
@@ -798,6 +1139,23 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def set_presence(self, user, host, resource, type, show, status, priority):
         """
         Set presence of a session
+
+        :param user: Username
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param resource: Resource
+        :type resource: str
+        :param type: Type: available, error, probe..
+        :type type: str
+        :param show: Show: away, chat, dnd, xa
+        :type show: str
+        :param status: Status text
+        :type status: str
+        :param priority: Priority, provide this value as an integer
+        :type priority: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetPresence, user=user,
                               host=host,
@@ -813,6 +1171,21 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def set_vcard(self, user, host, name, content):
         """
         Set content in a vCard field
+
+        Some vcard field names in get/set_vcard are:
+        FN - Full Name
+        NICKNAME - Nickname
+        BDAY - Birthday
+        TITLE - Work: Position
+        ROLE - Work: Role
+        For a full list of vCard fields check XEP-0054: vcard-temp at http://www.xmpp.org/extensions/xep-0054.html
+
+        :param user: User name
+        :param host: Server name
+        :param name: Field name
+        :param content: Value
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetVcard, user=user,
                               host=host,
@@ -822,6 +1195,14 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def set_vcard2(self, user, host, name, subname, content):
         """
         Set content in a vCard subfield
+
+        :param user: User name
+        :param host: Server name
+        :param name: Field name
+        :param subname: Subfield name
+        :param content: Value
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetVcard2, user=user,
                               host=host,
@@ -831,7 +1212,20 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def set_vcard2_multi(self, user, host, name, subname, contents):
         """
-        *Set multiple contents in a vCard subfield
+        Set multiple contents in a vCard subfield
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :param name: Field name
+        :type name: str
+        :param subname: Subfield name
+        :type subname: str
+        :param contents: Contents
+        :type contents: dict
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SetVcardMulti, user=user,
                               host=host,
@@ -842,6 +1236,23 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def srg_create(self, group, host, name, description, display):
         """
         Create a Shared Roster Group
+
+        If you want to specify several group identifiers in the Display argument,
+        put \ " around the argument and separate the identifiers with \ \ n
+        For example: ejabberdctl srg_create group3 myserver.com name desc \"group1\ngroup2\"
+
+        :param group: Group identifier
+        :type group: str
+        :param host: Group server name
+        :type host: str
+        :param name: Group name
+        :type name: str
+        :param description: Group description
+        :type description: str
+        :param display: Groups to display
+        :type display: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SrgCreate, group=group,
                               host=host,
@@ -852,30 +1263,67 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def srg_delete(self, group, host):
         """
         Delete a Shared Roster Group
+
+        :param group: Group identifier
+        :type group: str
+        :param host: Group server name
+        :type host: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SrgDelete, group=group, host=host)
 
     def srg_get_info(self, group, host):
         """
         Get info of a Shared Roster Group
+
+        :param group: Group identifier
+        :type group: str
+        :param host: Group server name
+        :type host: str
+        :return: List of group informations, as key and value
+        :rtype: list
         """
         return self._call_api(methods.SrgGetInfo, group=group, host=host)
 
     def srg_get_members(self, group, host):
         """
         Get members of a Shared Roster Group
+
+        :param group: Group identifier
+        :type group: str
+        :param host: Group server name
+        :type host: str
+        :return: List of group identifiers
+        :rtype: list
         """
         return self._call_api(methods.SrgGetMembers, group=group, host=host)
 
     def srg_list(self, host):
         """
         List the Shared Roster Groups in Host
+
+        :param host: Server name
+        :type host: str
+        :return:  List of group identifiers
+        :rtype: list
         """
         return self._call_api(methods.SrgList, host=host)
 
     def srg_user_add(self, user, host, group, grouphost):
         """
         Add the JID user@host to the Shared Roster Group
+
+        :param user: User name
+        :type user: str
+        :param host: User server name
+        :type host: str
+        :param group: Group identifier
+        :type group: str
+        :param grouphost: Group server name
+        :type grouphost: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SrgUserAdd, user=user,
                               host=host,
@@ -885,6 +1333,17 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def srg_user_del(self, user, host, group, grouphost):
         """
         Delete this JID user@host from the Shared Roster Group
+
+        :param user: User name
+        :type user: str
+        :param host: User server name
+        :type host: str
+        :param group: Group identifier
+        :type group: str
+        :param grouphost: Group server name
+        :type grouphost: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.SrgUserDel, user=user,
                               host=host,
@@ -893,68 +1352,111 @@ class EjabberdAPIClient(EjabberdBaseAPI):
 
     def stats(self, name):
         """
-        Get statistical value:
+        Get statistical value
 
+        :param name: Statistic name:
         * ``registeredusers``
         * ``onlineusers``
         * ``onlineusersnode``
         * ``uptimeseconds``
-        * ``processes`` - Introduced sometime after Ejabberd 15.07
+        * ``processes``
+        :type name: str
+        :return: Integer statistic value
         """
-        try:
-            return self._call_api(methods.Stats, name=name)
-        except xmlrpc_client.Fault as e:
-            msg = 'processes stats NOT available in this version of Ejabberd'
-            raise Exception('{}\n{} - code: {}\n'.format(msg, e.faultString, e.faultCode))
+        return self._call_api(methods.Stats, name=name)
 
     def stats_host(self, name, host):
         """
-        Get statistical value for this host:
+        Get statistical value
 
+        :param name: Statistic name:
         * ``registeredusers``
         * ``onlineusers``
+
+        :type name: str
+        :param host: Server JID
+        :type host: str
+        :return: Integer statistic value
+        :rtype: int
         """
         return self._call_api(methods.StatsHost, name=name, host=host)
 
     def status(self):
         """
-        Get ejabberd status
+        Get status of the ejabberd server
+
+        :return: Raw result string
+        :rtype: str
         """
         return self._call_api(methods.Status)
 
     def status_list(self, status):
         """
         List of logged users with this status
+
+        :param status: Status type to check
+        :type status: str
+        :return: List of users with this `status`
+        :rtype: list
         """
         return self._call_api(methods.StatusList, status=status)
 
     def status_list_host(self, host, status):
         """
         List of users logged in host with their statuses
+
+        :param host: Server name
+        :type host: str
+        :param status: Status type to check
+        :type status: str
+        :return: List of users with this `status` in `host`
+        :rtype: list
         """
         return self._call_api(methods.StatusListHost, host=host, status=status)
 
     def status_num(self, status):
         """
-        Number of logged users with this status
+         Number of logged users with this status
+
+        :param status: Status type to check
+        :type status: str
+        :return: Number of connected sessions with given status type
+        :rtype: list
         """
         return self._call_api(methods.StatusNum, status=status)
 
     def status_num_host(self, host, status):
         """
         Number of logged users with this status in host
+
+        :param host: Server name
+        :type host: str
+        :param status: Status type to check
+        :type status: str
+        :return: Number of connected sessions with given status type
+        :rtype: list
         """
         return self._call_api(methods.StatusNumHost, host=host, status=status)
 
     def stop(self):
         """
-        Stop ejabberd
+        Stop ejabberd gracefully
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.Stop)
 
     def stop_kindly(self, delay, announcement):
         """
         Inform users and rooms, wait, and stop the server
+        Provide the delay in seconds, and the announcement quoted,
+        for example: ejabberdctl stop_kindly 60 \"The server will stop in one minute.\"
+
+        :param delay: Seconds to wait
+        :param announcement: Announcement to send, with quotes
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.StopKindly,
                               delay=delay, announcement=announcement)
@@ -962,20 +1464,30 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     def subscribe_room(self, user, nick, room, nodes=None):
         """
         Subscribe to a MUC conference
-        :param user:
-        :param nick:
-        :param room:
-        :param nodes:
-        :return:
+        
+        :param user: User JID
+        :type user: str
+        :param nick: A user's nick
+        :type nick: str
+        :param room: The room to subscribe
+        :type room: str
+        :param nodes: List of nodes
+        :type nodes: list
+        :return: The list of nodes that has subscribed
+        :rtype: list
         """
         return self._call_api(methods.SubscribeRoom, user=user, nick=nick, room=room, nodes=nodes)
 
     def unsubscribe_room(self, user, room):
         """
         Unsubscribe from a MUC conference
-        :param user:
-        :param room:
-        :return:
+
+        :param user: User JID
+        :type user: str
+        :param room: The room to subscribe
+        :type room: str
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.UnSubscribeRoom, user=user, room=room)
 
@@ -983,44 +1495,52 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         Update the given module, or use the keyword: all
 
-        :param module:
+        :param module: Module to update
+        :return: Raw result string
+        :rtype: str
         """
         return self._call_api(methods.Update, module=module)
 
     def update_list(self):
         """
         List modified modules that can be updated
+
+        :return: List of modules
+        :rtype: list
         """
         return self._call_api(methods.UpdateList)
 
     def update_sql(self):
         """
-        List modified modules that can be updated
+        Convert SQL DB to the new format
+
+        :return: Status code (True if success, False otherwise)
+        :rtype: bool
         """
         return self._call_api(methods.UpdateSql)
 
-    def user_resources(self, user, server):
+    def user_resources(self, user, host):
         """
         List user's connected resources
 
-        Note, parameters changed in 15.09
-        from ``user, host``
-        to ``user, server``.
-
-        Arguments:
-
-        user :: binary
-        server :: binary
-
-        Result:
-
-        {resources,{list,{resource,string}}}
-
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :return: List of resources
+        :rtype: list
         """
-        return self._call_api(methods.UserResources, user=user, server=server)
+        return self._call_api(methods.UserResources, user=user, host=host)
 
     def user_sessions_info(self, user, host):
         """
         Get information about all sessions of a user
+
+        :param user: User name
+        :type user: str
+        :param host: Server name
+        :type host: str
+        :return: A List with user sessions
+        :rtype: list
         """
         return self._call_api(methods.UserSessionInfo, user=user, host=host)

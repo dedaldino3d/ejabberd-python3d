@@ -6,11 +6,11 @@ from ejabberd_python3d.core.utils import format_password_hash_sha
 from ejabberd_python3d.defaults import LogLevelOptions, loglevel_options_serializers
 from ejabberd_python3d.defaults.arguments import StringArgument, IntegerArgument, PositiveIntegerArgument, \
     LogLevelArgument, ListArgument, GenericArgument
-from ejabberd_python3d.muc import muc_room_options_serializers, mucsub_room_nodes
-from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument, MUCNodesArgument
-from ejabberd_python3d.muc.enums import Affiliation, MUCRoomOption, MUCNodes
+from ejabberd_python3d.muc import muc_room_options_serializers
+from ejabberd_python3d.muc.arguments import MUCRoomArgument, AffiliationArgument
+from ejabberd_python3d.muc.enums import Affiliation, MUCNodes
 from ejabberd_python3d.muc.serializers import MUCNodesSerializer
-from ejabberd_python3d.serializers import StringSerializer, BooleanSerializer
+from ejabberd_python3d.serializers import StringSerializer
 from six import string_types
 
 
@@ -134,7 +134,7 @@ class CreateRoom(API):
 
 class DestroyRoom(API):
     method = 'destroy_room'
-    arguments = [StringArgument('name'), StringArgument('service'), StringArgument('host')]
+    arguments = [StringArgument('name'), StringArgument('service')]
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
@@ -882,7 +882,7 @@ class UpdateSql(object):
 
 class UserResources(API):
     method = "update_sql"
-    arguments = [StringArgument("user"), StringArgument("server")]
+    arguments = [StringArgument("user"), StringArgument("host")]
 
     def transform_response(self, api, arguments, response):
         return response.get("resources")

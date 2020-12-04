@@ -123,11 +123,11 @@ class EjabberdBaseAPI(ABC):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
-    def user_sessions_info(self):
+    def user_sessions_info(self, user, host):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
-    def muc_online_rooms(self, host=None):
+    def muc_online_rooms(self, service=None):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
@@ -135,7 +135,7 @@ class EjabberdBaseAPI(ABC):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
-    def destroy_room(self, name, service, host):
+    def destroy_room(self, name, service):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
@@ -210,11 +210,6 @@ class EjabberdBaseAPI(ABC):
     def create_room_with_opts(self, name, service, host, options):
         """
         Create a MUC room name@service in host with given options
-        :param name:
-        :param service:
-        :param host:
-        :param options:
-        :return:
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -328,24 +323,6 @@ class EjabberdBaseAPI(ABC):
     def get_roster(self, user, server):
         """
         Get roster of a local user.
-
-        Note, parameters changed in 15.09
-        from ``user, host``
-        to ``user, server``.
-
-        Arguments:
-
-        user :: binary
-        server :: binary
-
-        Result:
-
-        {contacts,{list,{contact,{tuple,[{jid,string},
-                                         {nick,string},
-                                         {subscription,string},
-                                         {ask,string},
-                                         {group,string}]}}}}
-
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -353,18 +330,12 @@ class EjabberdBaseAPI(ABC):
     def get_subscribers(self, name, service):
         """
         List subscribers of a MUC conference
-        :param name:
-        :param service:
-        :return:
         """
         raise NotImplementedError("subclass must implement this method")
 
     def get_user_rooms(self, user, host):
         """
         Get the list of rooms where this user is occupant
-        :param user:
-        :param host:
-        :return:
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -431,11 +402,6 @@ class EjabberdBaseAPI(ABC):
     def list_cluster(self):
         """
         List nodes that are part of the cluster handled by Node
-
-        Result:
-
-        {nodes,{list,{node,atom}}}
-
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -530,7 +496,6 @@ class EjabberdBaseAPI(ABC):
     def reload_config(self):
         """
         Reload ejabberd configuration file into memory
-
         (only affects ACL and Access)
         """
         raise NotImplementedError("subclass must implement this method")
@@ -602,15 +567,6 @@ class EjabberdBaseAPI(ABC):
     def set_loglevel(self, loglevel):
         """
         Set the loglevel (0 to 5)
-
-        Arguments:
-
-            loglevel :: integer
-
-        Result:
-
-        {logger,atom}
-
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -712,12 +668,6 @@ class EjabberdBaseAPI(ABC):
     def stats(self, name):
         """
         Get statistical value:
-
-        * ``registeredusers``
-        * ``onlineusers``
-        * ``onlineusersnode``
-        * ``uptimeseconds``
-        * ``processes`` - Introduced sometime after Ejabberd 15.07
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -725,9 +675,6 @@ class EjabberdBaseAPI(ABC):
     def stats_host(self, name, host):
         """
         Get statistical value for this host:
-
-        * ``registeredusers``
-        * ``onlineusers``
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -783,20 +730,12 @@ class EjabberdBaseAPI(ABC):
     def subscribe_room(self, user, nick, room, nodes):
         """
         Subscribe to a MUC conference
-        :param user:
-        :param nick:
-        :param room:
-        :param nodes:
-        :return:
         """
         raise NotImplementedError("subclass must implement this method")
 
     def unsubscribe_room(self, user, room):
         """
         Unsubscribe from a MUC conference
-        :param user:
-        :param room:
-        :return:
         """
         raise NotImplementedError("subclass must implement this method")
 
@@ -815,22 +754,8 @@ class EjabberdBaseAPI(ABC):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
-    def user_resources(self, user, server):
+    def user_resources(self, user, host):
         """
         List user's connected resources
-
-        Note, parameters changed in 15.09
-        from ``user, host``
-        to ``user, server``.
-
-        Arguments:
-
-        user :: binary
-        server :: binary
-
-        Result:
-
-        {resources,{list,{resource,string}}}
-
         """
         raise NotImplementedError("subclass must implement this method")
