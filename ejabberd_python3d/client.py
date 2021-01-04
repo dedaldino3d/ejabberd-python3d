@@ -174,7 +174,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         self._report_method_call(api.method, args)
 
         # perform call
-        print("auth args: %s, args: %s" % (self.auth, args))
         try:
             if not api.authenticate:
                 response = method(args)
@@ -644,8 +643,9 @@ class EjabberdAPIClient(EjabberdBaseAPI):
     # TODO def get_room_affiliations(self, name, service):
     # Get the list of affiliations of a MUC room
 
-    # TODO def get_room_occupants(self, name, service):
-    # Get the list of occupants of a MUC room
+    def get_room_occupants(self, name, service):
+        # Get the list of occupants of a MUC room
+        return self._call_api(methods.GetRoomOccupants, name=name, service=service)
 
     # TODO def get_room_occupants_number(self, name, service):
     # Get the number of occupants of a MUC room
