@@ -321,9 +321,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                               host=host,
                               reason=reason)
 
-    # TODO def change_room_option(self, name, service, option, value)
-    # Change an option in a MUC room
-
     def check_account(self, user, host):
         """
         Check if an account exists or not

@@ -144,6 +144,7 @@ class EjabberdBaseAPI(ABC):
 
     @abstractmethod
     def change_room_option(self, name, service, option, value):
+        """Change an option in a MUC room"""
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
@@ -174,9 +175,6 @@ class EjabberdBaseAPI(ABC):
         Ban an account: kick sessions and set random password
         """
         raise NotImplementedError("subclass must implement this method")
-
-    # TODO def change_room_option(self, name, service, option, value)
-    # Change an option in a MUC room
 
     @abstractmethod
     def check_account(self, user, host):
