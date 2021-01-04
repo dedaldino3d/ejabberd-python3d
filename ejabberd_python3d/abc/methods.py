@@ -935,3 +935,11 @@ class DeleteOldMAMMessages(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
+
+
+class DestroyRoomsFile(API):
+    method = "destroy_rooms_file"
+    arguments = [StringArgument('file')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0

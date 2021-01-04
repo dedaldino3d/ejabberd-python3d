@@ -265,9 +265,9 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-
-    # TODO def destroy_rooms_file(self, file):
-    # Destroy the rooms indicated in file. Provide one room JID per line.
+    def destroy_rooms_file(self, file):
+        """Destroy the rooms indicated in file. Provide one room JID per line."""
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def dump(self, file):
     # Dump the database to text file

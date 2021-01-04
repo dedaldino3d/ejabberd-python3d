@@ -524,8 +524,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                               user=user,
                               server=host)
 
-    # TODO def destroy_rooms_file(self, file):
-    # Destroy the rooms indicated in file. Provide one room JID per line.
+    def destroy_rooms_file(self, file):
+        """
+        Destroy the rooms indicated in file. Provide one room JID per line.
+        :param file: Path to the text file with one room JID per line
+        :return:
+        """
+        return self._call_api(methods.DestroyRoomsFile, file=file)
 
     # TODO def dump(self, file):
     # Dump the database to text file
