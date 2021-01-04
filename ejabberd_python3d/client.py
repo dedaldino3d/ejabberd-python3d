@@ -430,8 +430,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.CreateRoomWithOpts, name=name, service=service, host=host, options=options)
 
-    # TODO def create_rooms_file(self, file):
-    # Create the rooms indicated in file
+    def create_rooms_file(self, file):
+        """
+        Create the rooms indicated in file
+        :param file: Path to the text file with one room JID per line
+        :return: True on success, False otherwise
+        """
+        return self._call_api(methods.CreateRoomsFile, file=file)
 
     def delete_expired_messages(self):
         """

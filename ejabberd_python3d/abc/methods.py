@@ -911,3 +911,11 @@ class ConvertToYAML(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class CreateRoomsFile(API):
+    method = "create_rooms_file"
+    arguments = [StringArgument('file')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0

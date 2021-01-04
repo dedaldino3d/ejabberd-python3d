@@ -216,8 +216,9 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def create_rooms_file(self, file):
-    # Create the rooms indicated in file
+    def create_rooms_file(self, file):
+        """Create the rooms indicated in file"""
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def delete_expired_messages(self):
