@@ -164,7 +164,9 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def backup(self, file): Store the database to backup file
+    def backup(self, file):
+        """Store the database to backup file"""
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def ban_account(self, user, host, reason):

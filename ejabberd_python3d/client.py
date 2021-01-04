@@ -294,7 +294,15 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                               group=group,
                               subs=subs)
 
-    # TODO def backup(self, file): Store the database to backup file
+    def backup(self, file):
+        """
+        Store the database to backup file
+        :param file: Full path for the destination backup file
+        :type file: str
+        :return: raw string result
+        :rtype: str
+        """
+        return self._call_api(methods.Backup, file=file)
 
     def ban_account(self, user, host, reason):
         """
