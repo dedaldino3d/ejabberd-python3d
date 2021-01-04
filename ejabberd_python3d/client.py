@@ -532,8 +532,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.DestroyRoomsFile, file=file)
 
-    # TODO def dump(self, file):
-    # Dump the database to text file
+    def dump(self, file):
+        """
+        Dump the database to text file
+        :param file: Full path for the text file
+        :return:
+        """
+        return self._call_api(methods.Dump, file=file)
 
     # TODO def dump_table(self, file, table):
     # Dump a table to text file

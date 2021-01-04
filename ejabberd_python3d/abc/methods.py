@@ -943,3 +943,11 @@ class DestroyRoomsFile(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
+
+
+class Dump(API):
+    method = "dump"
+    arguments = [StringArgument('file')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0
