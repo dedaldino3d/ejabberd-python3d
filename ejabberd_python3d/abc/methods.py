@@ -919,3 +919,11 @@ class CreateRoomsFile(API):
 
     def transform_response(self, api, arguments, response):
         return response.get('res') == 0
+
+
+class DeleteMnesia(API):
+    method = "delete_mnesia"
+    arguments = [StringArgument('host')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0

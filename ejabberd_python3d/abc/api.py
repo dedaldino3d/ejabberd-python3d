@@ -227,8 +227,9 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def delete_mnesia(self, host):
-    # Export all tables as SQL queries to a file
+    def delete_mnesia(self, host):
+        """Delete elements in Mnesia database for a given vhost"""
+        raise NotImplementedError("subclass must implement this method")
 
     # TODO def delete_old_mam_messages(self, type, days):
     # Delete MAM messages older than DAYS

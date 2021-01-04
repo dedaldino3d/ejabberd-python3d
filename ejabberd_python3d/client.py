@@ -447,8 +447,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.DeleteExpiredMessages)
 
-    # TODO def delete_mnesia(self, host):
-    # Export all tables as SQL queries to a file
+    def delete_mnesia(self, host):
+        """
+        Delete elements in Mnesia database for a given vhost
+        :param host:  Vhost which content will be deleted in Mnesia database
+        :return:
+        """
+        return self._call_api(methods.DeleteMnesia, host=host)
 
     # TODO def delete_old_mam_messages(self, type, days):
     # Delete MAM messages older than DAYS
