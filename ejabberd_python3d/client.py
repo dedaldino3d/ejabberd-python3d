@@ -404,8 +404,14 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.ConvertToSCRAM, host=host)
 
-    # TODO def convert_to_yaml(self, in, out):
-    # Convert the input file from Erlang to YAML format
+    def convert_to_yaml(self, in_file, out_file):
+        """
+        Convert the input file from Erlang to YAML format
+        :param in_file: Full path to the original configuration file
+        :param out_file: Full path to final file
+        :return:
+        """
+        return self._call_api(methods.ConvertToYAML, in_file=in_file, out_file=out_file)
 
     def create_room_with_opts(self, name, service, host, options):
         """

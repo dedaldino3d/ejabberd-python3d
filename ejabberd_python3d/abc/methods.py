@@ -894,3 +894,20 @@ class KickUser(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("num_resources")
+
+
+class ConvertToYAML(API):
+    method = 'convert_to_yaml'
+    arguments = [StringArgument('in_file'), StringArgument('out_file')]
+
+    def transform_arguments(self, **kwargs):
+        in_file = kwargs.pop('in_file')
+        out_file = kwargs.pop('out_file')
+        kwargs.update({
+            'in': in_file,
+            'out': out_file,
+        })
+        return kwargs
+
+    def transform_response(self, api, arguments, response):
+        return response.get("res") == 0

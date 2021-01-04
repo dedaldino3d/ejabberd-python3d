@@ -205,8 +205,9 @@ class EjabberdBaseAPI(ABC):
         """Convert the passwords in ‘users’ SQL table to SCRAM """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def convert_to_yaml(self, in, out):
-    # Convert the input file from Erlang to YAML format
+    def convert_to_yaml(self, in_file, out_file):
+        """Convert the input file from Erlang to YAML format"""
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def create_room_with_opts(self, name, service, host, options):
