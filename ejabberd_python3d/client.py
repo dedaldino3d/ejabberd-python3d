@@ -351,8 +351,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                               host=host,
                               password=password)
 
-    # TODO def compile(self, file):
-    # Recompile and reload Erlang source code file
+    def compile(self, file):
+        """
+        Recompile and reload Erlang source code file
+        :param file: Filename of erlang source file to compile
+        :return: True on success, False otherwise
+        """
+        return self._call_api(methods.Compile, file=file)
 
     def connected_users(self):
         """

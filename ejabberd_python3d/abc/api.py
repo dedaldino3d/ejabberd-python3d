@@ -190,8 +190,9 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def compile(self, file):
-    # Recompile and reload Erlang source code file
+    def compile(self, file):
+        """Recompile and reload Erlang source code file"""
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def connected_users_vhost(self, host):
