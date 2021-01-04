@@ -136,6 +136,7 @@ class EjabberdBaseAPI(ABC):
 
     @abstractmethod
     def destroy_room(self, name, service):
+        """Destroy a MUC room"""
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
@@ -264,8 +265,6 @@ class EjabberdBaseAPI(ABC):
         """
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def destroy_room(self, name, service):
-    # Destroy a MUC room
 
     # TODO def destroy_rooms_file(self, file):
     # Destroy the rooms indicated in file. Provide one room JID per line.

@@ -524,9 +524,6 @@ class EjabberdAPIClient(EjabberdBaseAPI):
                               user=user,
                               server=host)
 
-    # TODO def destroy_room(self, name, service):
-    # Destroy a MUC room
-
     # TODO def destroy_rooms_file(self, file):
     # Destroy the rooms indicated in file. Provide one room JID per line.
 
