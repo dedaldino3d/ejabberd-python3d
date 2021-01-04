@@ -103,7 +103,7 @@ class EjabberdBaseAPI(ABC):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
-    def change_password(self, user, host, password, newpass):
+    def change_password(self, user, host, newpass):
         raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
