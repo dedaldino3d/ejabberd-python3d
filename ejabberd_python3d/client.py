@@ -396,8 +396,13 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         return self._call_api(methods.ConnectedUsersVhost, host=host)
 
-    # TODO def convert_to_scram(self, host):
-    # Convert the passwords in ‘users’ SQL table to SCRAM
+    def convert_to_scram(self, host):
+        """
+        Convert the passwords of users to SCRAM
+        :param host: Vhost which users' passwords will be scrammed
+        :return:
+        """
+        return self._call_api(methods.ConvertToSCRAM, host=host)
 
     # TODO def convert_to_yaml(self, in, out):
     # Convert the input file from Erlang to YAML format
