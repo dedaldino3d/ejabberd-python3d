@@ -927,3 +927,11 @@ class DeleteMnesia(API):
 
     def transform_response(self, api, arguments, response):
         return response.get("res") == 0
+
+
+class DeleteOldMAMMessages(API):
+    method = "delete_old_mam_messages"
+    arguments = [StringArgument('type'), StringArgument('days')]
+
+    def transform_response(self, api, arguments, response):
+        return response.get('res') == 0

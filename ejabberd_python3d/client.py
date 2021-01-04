@@ -451,12 +451,18 @@ class EjabberdAPIClient(EjabberdBaseAPI):
         """
         Delete elements in Mnesia database for a given vhost
         :param host:  Vhost which content will be deleted in Mnesia database
-        :return:
+        :return: True on success, False otherwise
         """
         return self._call_api(methods.DeleteMnesia, host=host)
 
-    # TODO def delete_old_mam_messages(self, type, days):
-    # Delete MAM messages older than DAYS
+    def delete_old_mam_messages(self, type, days):
+        """
+        Delete MAM messages older than DAYS
+        :param type: Type of messages to delete (chat, groupchat, all)
+        :param days: Days to keep messages
+        :return: True on success, False otherwise
+        """
+        return self._call_api(methods.DeleteOldMAMMessages, type=type, days=days)
 
     def delete_old_messages(self, days):
         """

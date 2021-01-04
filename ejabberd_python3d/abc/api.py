@@ -231,8 +231,9 @@ class EjabberdBaseAPI(ABC):
         """Delete elements in Mnesia database for a given vhost"""
         raise NotImplementedError("subclass must implement this method")
 
-    # TODO def delete_old_mam_messages(self, type, days):
-    # Delete MAM messages older than DAYS
+    def delete_old_mam_messages(self, type, days):
+        """Delete MAM messages older than DAYS"""
+        raise NotImplementedError("subclass must implement this method")
 
     @abstractmethod
     def delete_old_messages(self, days):
