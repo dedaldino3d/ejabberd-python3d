@@ -4,8 +4,8 @@ from ejabberd_python3d.abc.api import Enum
 
 
 class MUCRoomOption(Enum):
-    allow_change_subj = 1
-    allow_private_messages = 2
+    allow_change_subj = 'allow_change_subj'
+    allow_private_messages = 'allow_private_messages'
     allow_private_messages_from_visitors = 3
     allow_query_users = 4
     allow_user_invites = 5
